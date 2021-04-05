@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-0-0_What Happened
+  m_EditorClassIdentifier: 
+  basic: 0
+  initializePlayer: 1
+  storyText: 'It''s 2 a.m., according to your watch. You lay your head back down
+    on the hardwood floor. Another drunken night?
+
+    No.
+
+    <a href="hyperlink">hyperlink</a>'
+  optText: 
+  chapterTitle: Prologue - What Happened?
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: 7a23ef6e0f5a7f84ca3470316191c9c7, type: 2}
+  parameters: 
+  setFunctions: 
+  initialSettings: clues_found%VAR%0

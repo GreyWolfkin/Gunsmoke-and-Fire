@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: P-15
+  m_EditorClassIdentifier: 
+  basic: 0
+  storyText: Castellan looks you up and down, hard. "You get one shot, Rothyk. One
+    more chance. Don't screw this up." He hands you an envelope. Like every one before
+    it, the envelope is stained with splotches of yellow and brown, sealed with a
+    midnight-blue wax. The wax had been broken, and the neatly-folded letter had
+    been returned to the envelope. You remove the letter and open it with shaking
+    hands.
+  optText: (Continue)
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: 202f844dbda4a1c45b9ef58f5a0757f7, type: 2}
+  requiredFlags: []
+  setsFlags: []
+  killsFlags: []
+  requiredItems: []
+  addsItems: []
+  removesItems: []

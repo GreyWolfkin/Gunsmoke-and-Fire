@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ca8c62c55f4a6234490dc9b6dd7a8605
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - storyField: {instanceID: 0}
+  - startingState: {fileID: 11400000, guid: 7d7c3403e0da1a242aded0ce3ea17046, type: 2}
+  - invState: {fileID: 11400000, guid: e2a2a0943c45062409d0eb339d026dbb, type: 2}
+  - journalState: {fileID: 11400000, guid: bf70146d1f9f04443a3caf8d8d6355bb, type: 2}
+  - p: {fileID: 11400000, guid: 114cde7f98b9a9b4eaa49d601cb1f56e, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

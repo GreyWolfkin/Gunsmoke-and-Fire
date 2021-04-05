@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-0-12_MissingFiles
+  m_EditorClassIdentifier: 
+  basic: 0
+  initializePlayer: 0
+  storyText: Suddenly it hits you. Where are the files on the Atellena case? You
+    go over every scrap of paper again to be sure. But they're gone. They're all
+    gone.
+  optText: (Continue)
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: 9f091aad93fb8c740a762560f55ff301, type: 2}
+  parameters: 
+  setFunctions: 
+  initialSettings: 

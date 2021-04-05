@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 3-3
+  m_EditorClassIdentifier: 
+  basic: 0
+  initializePlayer: 0
+  storyText: 'You have already beaten up Jack.
+
+    Your number_beat_up stat does
+    not equal 0.
+
+    You have the beat_up_jack flag.
+
+    You do not have the friends_with_jack
+    flag.'
+  optText: Do not beat up Jack
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: c4d3d55217292564d92ddfa4c3d8f4c2, type: 2}
+  parameters: number_beat_up%VAR_REQ%!=%0|beat_up_jack%FLAG_REQ|friends_with_jack%FLAG_LOCK
+  setFunctions: 
+  initialSettings: 

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: T2-RedRoom
+  m_EditorClassIdentifier: 
+  basic: 0
+  storyText: 'You unlock the Red Door.
+
+    You are in a Red Room.
+
+    You find
+    a Yellow Key.'
+  optText: Red Door
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: be296d85ef2147d4cbadff26c1d71196, type: 2}
+  requiredFlags:
+  - Red_Key
+  lockFlags: []
+  setsFlags:
+  - Unlocked_Red_Door
+  - Yellow_Key
+  killsFlags: []
+  requiredItems: []
+  addsItems: []
+  removesItems: []
+  modifierFlags:
+  - Yellow_Key
+  modifiedStoryTexts:
+  - 'You are in a Red Room.
+
+    This is where you found the Yellow Key.'

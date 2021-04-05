@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-0-11_Cabinets
+  m_EditorClassIdentifier: 
+  basic: 0
+  initializePlayer: 0
+  storyText: You check out your filing cabinets. They've been opened, and evidence
+    from multiple cases has been thrown around. You look through the cabinets and
+    the papers on the ground. What were they looking for?
+  optText: Examine the filing cabinets
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: b22ba6eb51228664ba8479d4e311c937, type: 2}
+  parameters: clues_found%VAR_REQ%<%4|examined_filing_cabinets%FLAG_LOCK
+  setFunctions: clues_found%VAR_SET%+%1|examined_filing_cabinets%FLAG_SET
+  initialSettings: 

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: P-12a
+  m_EditorClassIdentifier: 
+  basic: 0
+  storyText: '"One of these days someone''s going to learn about how you come into
+    work drunk every day, and they''re gonna have questions about why we haven''t
+    found Atellena yet. You ready for those questions, Rothyk? Are you?"'
+  optText: (Continue)
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: 1646df376c8fe6746989a8c4ee74c77e, type: 2}
+  - {fileID: 11400000, guid: 583f754f2d4c30642a22a9903d282f24, type: 2}
+  requiredFlags: []
+  setsFlags: []
+  killsFlags: []
+  requiredItems: []
+  addsItems: []
+  removesItems: []

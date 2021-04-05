@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: T2-BlueRoom
+  m_EditorClassIdentifier: 
+  basic: 0
+  storyText: 'You unlock the Blue Door.
+
+    You are in a Blue Room.
+
+    There is
+    a Black Door in front of you. It is unlocked.'
+  optText: Blue Door
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: e00c1fec2dc005249b3636108718d899, type: 2}
+  - {fileID: 11400000, guid: be296d85ef2147d4cbadff26c1d71196, type: 2}
+  requiredFlags:
+  - Blue_Key
+  lockFlags: []
+  setsFlags:
+  - Unlocked_Blue_Door
+  killsFlags: []
+  requiredItems: []
+  addsItems: []
+  removesItems: []
+  modifierFlags:
+  - Unlocked_Blue_Door
+  modifiedStoryTexts:
+  - 'You are in a Blue Room.
+
+    There is a Black Door in front of you. It is unlocked.'

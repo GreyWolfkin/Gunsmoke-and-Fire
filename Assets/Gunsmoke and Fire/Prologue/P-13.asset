@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: P-13
+  m_EditorClassIdentifier: 
+  basic: 0
+  storyText: 'Castellan stands heavily. Everything about him is tired.
+
+    "Rothyk.
+    You saved my ass in the war. I wouldn''t be standing here if it weren''t for
+    you. That''s why I''ve let this go on as long as it has. But enough is enough.
+    You''re right, we wouldn''t have gotten this far in the case without your help,
+    but I just don''t think you''re up to this. Not anymore."'
+  optText: (Continue)
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: 085b0d139bd1449419247d50a308e711, type: 2}
+  - {fileID: 11400000, guid: 9c07c2c691241df428720c7c98aea86c, type: 2}
+  requiredFlags: []
+  setsFlags: []
+  killsFlags: []
+  requiredItems: []
+  addsItems: []
+  removesItems: []

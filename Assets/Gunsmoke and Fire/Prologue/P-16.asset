@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: P-16
+  m_EditorClassIdentifier: 
+  basic: 0
+  storyText: '"Sitting in the city''s heart
+
+    A place asunder, torn apart
+
+    Though
+    never whole, still blade did sever
+
+    In darkness sleeping, dreaming ever
+
+    Where
+    Fathers wept when brave boys died
+
+    She needs to find the Lion''s Pride
+
+    And
+    in your hand, you hold her last
+
+    The final clue, now find her fast!"'
+  optText: (Continue)
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: 73c7d422c7d6d184b8b0389e5be00c25, type: 2}
+  requiredFlags: []
+  lockFlags: []
+  setsFlags: []
+  killsFlags: []
+  requiredItems: []
+  addsItems: []
+  removesItems: []
+  modifierFlags: []
+  modifiedStoryTexts: []

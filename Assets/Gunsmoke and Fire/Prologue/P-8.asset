@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: P-8
+  m_EditorClassIdentifier: 
+  basic: 0
+  storyText: '"You still don''t get it." He sighs.
+
+    "I''m getting pressure from
+    the Atellan family. They want to know why there hasn''t been a break in the case
+    yet."'
+  optText: (Continue)
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: 3d9cfc9bb7f7cf34fbecd49ccdebe0a6, type: 2}
+  - {fileID: 11400000, guid: 26448195601f754439444b999f7b6e9e, type: 2}
+  requiredFlags: []
+  setsFlags: []
+  killsFlags: []
+  requiredItems: []
+  addsItems: []
+  removesItems: []
