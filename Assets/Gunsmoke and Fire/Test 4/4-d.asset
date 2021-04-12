@@ -18,7 +18,8 @@ MonoBehaviour:
   optText: Clue D
   chapterTitle: 
   locked: 0
-  childStates: []
+  childStates:
+  - {fileID: 11400000, guid: f0f12e75b0618a0478bcea569f972572, type: 2}
   parameters: clue_d%FLAG_LOCK
   setFunctions: clue_d%FLAG_SET
   initialSettings: 

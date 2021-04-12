@@ -25,4 +25,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7a23ef6e0f5a7f84ca3470316191c9c7, type: 2}
   parameters: 
   setFunctions: 
-  initialSettings: clues_found%VAR%0
+  initialSettings: TRUE%CLEAR|clues_found%VAR%0

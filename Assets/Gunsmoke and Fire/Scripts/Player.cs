@@ -15,6 +15,7 @@ public class Player : ScriptableObject {
     List<string> deductions;
 
     List<string> journalEntries;
+    List<string> inventoryEntries;
 
     public State getCurrentState() {
         return currentState;
@@ -107,6 +108,18 @@ public class Player : ScriptableObject {
             case "clue_f":
                 entry = "I found clue F";
                 break;
+            case "examined_desk":
+                entry = "My desk had several bullet holes in the top. I must have taken cover behind it during the shoot-out.";
+                break;
+            case "examined_walls":
+                entry = "Found bullet holes and scorch marks on the walls. Whoever I tussled with brought a gun and magic too.";
+                break;
+            case "examined_self":
+                entry = "Got a nasty head wound. Just a hair to the left and I'd have a pretty new hole to whistle outta. They must have thought they did the job proper and left me there.";
+                break;
+            case "examined_filing_cabinets":
+                entry = "They cleaned out the office of my files on the Atellena case. Someone doesn't want that little girl found.";
+                break;
             default:
                 return;
         }
@@ -154,6 +167,21 @@ public class Player : ScriptableObject {
     }
     public void setItem(string item) {
         items.Add(item);
+        
+        // FOR ITEMS THAT ADD INVENTORY ENTRIES, ADD RELEVANT ENTRY HERE
+        // default will catch any flag that does not add an inventory entry, and return before anything is added
+
+        string entry = "";
+
+        switch(item) {
+            case "bottle_of_bourbon":
+                entry = "Bottle of Bourbon\n\tThe good stuff. Unopened.";
+                break;
+            default:
+                return;
+        }
+
+        inventoryEntries.Insert(0, entry);
     }
     public void addItems(List<string> items) {
         items.AddRange(items);
@@ -163,6 +191,7 @@ public class Player : ScriptableObject {
     }
     public void clearItems() {
         items.Clear();
+        inventoryEntries.Clear();
     }
     private int getItemIndex(string name) {
         for(int i = 0; i < items.Count; i++) {
@@ -203,6 +232,10 @@ public class Player : ScriptableObject {
             // Add an entry for each item the player can carry
         }
         return invString;
+    }
+
+    public List<string> getInventoryEntries() {
+        return inventoryEntries;
     }
 
     public List<string> getDeductions() {

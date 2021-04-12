@@ -22,5 +22,5 @@ MonoBehaviour:
   childStates:
   - {fileID: 11400000, guid: bc8f2e84d10d3b04383fc4de9dd8c016, type: 2}
   parameters: clues_found%VAR_REQ%<%4|examined_self%FLAG_LOCK
-  setFunctions: clues_found%VAR_SET%+%1|examined_self%FLAG_SET
+  setFunctions: clues_found%VAR_SET%+%1
   initialSettings: 

@@ -27,5 +27,5 @@ MonoBehaviour:
   childStates:
   - {fileID: 11400000, guid: 9f091aad93fb8c740a762560f55ff301, type: 2}
   parameters: 
-  setFunctions: 
+  setFunctions: examined_self%FLAG_SET
   initialSettings: 

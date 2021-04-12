@@ -18,6 +18,12 @@ public class State : ScriptableObject {
     [TextArea(10, 14)] [SerializeField] string setFunctions;
     [TextArea(10, 14)] [SerializeField] string initialSettings;
 
+    [SerializeField] AudioSource audio;
+
+    public AudioSource getAudio() {
+        return audio;
+    }
+
     public bool isBasic() {
         return basic;
     }

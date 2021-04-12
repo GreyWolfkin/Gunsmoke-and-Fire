@@ -27,5 +27,5 @@ MonoBehaviour:
   childStates:
   - {fileID: 11400000, guid: 162eba7aca8cb9a4b907651f6b296465, type: 2}
   parameters: clues_found%VAR_REQ%<%4|examined_desk%FLAG_LOCK
-  setFunctions: clues_found%VAR_SET%+%1|examined_desk%FLAG_SET|bottle_of_burboun%ITEM_SET
+  setFunctions: clues_found%VAR_SET%+%1|examined_desk%FLAG_SET
   initialSettings: 
