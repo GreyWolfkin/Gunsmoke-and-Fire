@@ -126,7 +126,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     }
 
     private void journalKeystroke(KeyCode code) {
-        if(journalPage * 3 <= p.getJournalEntries().Count) {
+        if(p.getJournalEntries().Count <= journalPage * 3 + 3) {
             if(codes1.Contains(code)) {
                 journalPage = 0;
                 currentState = p.getCurrentState();
@@ -159,16 +159,19 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         List<string> journalEntries = p.getJournalEntries();
         string journalText = "";
         if(journalPage == 0) {
-            journalText += "JOURNAL\n-------";
+            journalText += "JOURNAL\n-------\n\n";
         }
         for(int i = journalPage * 3; i < journalEntries.Count; i++) {
-            journalText += "\n\n" + journalEntries[i];
-            if(i == journalEntries.Count - 1 || i == journalPage * 3 + 3) {
+            if(i != journalPage * 3) {
+                journalText += "\n\n";
+            }
+            journalText += journalEntries[i];
+            if(i == journalEntries.Count - 1 || i == journalPage * 3 + 2) {
                 break;
             }
         }
         storyField.text = journalText;
-        if(journalPage * 3 <= journalEntries.Count) {
+        if(journalPage * 3 + 3 >= journalEntries.Count) {
             optionsField.text = "(Return)";
         } else {
             optionsField.text = "1 - Next Page\n2 - Return";

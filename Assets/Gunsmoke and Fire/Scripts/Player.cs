@@ -111,7 +111,7 @@ public class Player : ScriptableObject {
                 return;
         }
 
-        journalEntries.Add(entry);
+        journalEntries.Insert(0, entry);
     }
     public void addFlags(List<string> flags) {
         flags.AddRange(flags);
