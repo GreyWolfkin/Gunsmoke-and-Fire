@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
-  m_Name: z-Inv
+  m_Name: 4-d
   m_EditorClassIdentifier: 
-  basic: 1
+  basic: 0
   initializePlayer: 0
-  storyText: Inventory text will go here
-  optText: 
+  storyText: You find Clue D
+  optText: Clue D
   chapterTitle: 
   locked: 0
   childStates: []
-  parameters: 
-  setFunctions: 
+  parameters: clue_d%FLAG_LOCK
+  setFunctions: clue_d%FLAG_SET
   initialSettings: 

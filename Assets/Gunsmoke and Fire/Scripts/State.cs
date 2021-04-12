@@ -224,10 +224,12 @@ public class State : ScriptableObject {
             return;
         }
 
-        List<string> varNameList = new List<string>();
-        List<int> varValList = new List<int>();
-        List<string> flagList = new List<string>();
-        List<string> itemList = new List<string>();
+        List<string> varNames = new List<string>();
+        List<int> varVals = new List<int>();
+        List<string> flags = new List<string>();
+        List<string> items = new List<string>();
+
+        Boolean clear = false;
 
         string[] settings = initialSettings.Split('|');
         string[] set = new string[3];
@@ -235,15 +237,22 @@ public class State : ScriptableObject {
             foreach(string setting in settings) {
                 set = setting.Split('%');
                 switch(set[1]) {
+                    case "CLEAR":
+                        if(set[0].Equals("TRUE")) {
+                            clear = true;
+                        } else {
+                            clear = false;
+                        }
+                        break;
                     case "VAR":
-                        varNameList.Add(set[0]);
-                        varValList.Add(Int32.Parse(set[2]));
+                        varNames.Add(set[0]);
+                        varVals.Add(Int32.Parse(set[2]));
                         break;
                     case "FLAG":
-                        flagList.Add(set[0]);
+                        flags.Add(set[0]);
                         break;
                     case "ITEM":
-                        itemList.Add(set[0]);
+                        items.Add(set[0]);
                         break;
                     default:
                         Debug.Log("Bad value passed to initPlayer.\nReceived " + set[1]);
@@ -251,13 +260,23 @@ public class State : ScriptableObject {
                 }
             }
 
-            string[] varNames = varNameList.ToArray();
-            int[] varVals = varValList.ToArray();
-
-            p.setVarNames(varNames);
-            p.setVarVals(varVals);
-            p.setFlags(flagList);
-            p.setItems(itemList);
+            if(clear) {
+                p.clearVars();
+                p.clearFlags();
+                p.clearItems();
+            }
+            foreach(string varName in varNames) {
+                p.addVarName(varName);
+            }
+            foreach(int varVal in varVals) {
+                p.addVarVal(varVal);
+            }
+            foreach(string flag in flags) {
+                p.setFlag(flag);
+            }
+            foreach(string item in items) {
+                p.setItem(item);
+            }
         } catch(FormatException) {
             Debug.Log("Bad value passed to initPlayer.\nReceived " + set[2]);
         } catch(IndexOutOfRangeException) {

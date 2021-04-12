@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 4-0
+  m_EditorClassIdentifier: 
+  basic: 0
+  initializePlayer: 0
+  storyText: Learn clues a, b, c, d, e, and f
+  optText: (Continue)
+  chapterTitle: 
+  locked: 0
+  childStates:
+  - {fileID: 11400000, guid: ab0278a8798046a42a259d2624579d5d, type: 2}
+  - {fileID: 11400000, guid: 6108d459b16c976499c76a253c9639e5, type: 2}
+  - {fileID: 11400000, guid: 41141d9b1b83f484cbf4f6feac6982b3, type: 2}
+  - {fileID: 11400000, guid: 707757a6f7ee3df488e9fa042e539df8, type: 2}
+  - {fileID: 11400000, guid: ad56d74235c63b3408ba252d906f376e, type: 2}
+  - {fileID: 11400000, guid: 8ac73750c79092d43956559304ad328f, type: 2}
+  - {fileID: 11400000, guid: 4f3ab96a234aa1d4ba0051703a418491, type: 2}
+  - {fileID: 11400000, guid: 641a96f93c05da4439ae7ec9ff9c7b70, type: 2}
+  - {fileID: 11400000, guid: 55b32aecf20485f48a771388d8f73c61, type: 2}
+  - {fileID: 11400000, guid: d60edd06559b21845bb1bfff63c960dd, type: 2}
+  - {fileID: 11400000, guid: d16cbbe28ddfbf2419ef70db31f64931, type: 2}
+  - {fileID: 11400000, guid: 254a9d8843f7d434ebcf14e053a0d2a5, type: 2}
+  parameters: 
+  setFunctions: 
+  initialSettings: 

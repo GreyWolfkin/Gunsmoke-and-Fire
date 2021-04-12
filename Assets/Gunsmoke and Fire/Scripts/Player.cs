@@ -7,10 +7,14 @@ public class Player : ScriptableObject {
 
     State currentState;
 
-    string[] varNames;
-    int[] varVals;
+    List<string> varNames;
+    List<int> varVals;
     List<string> flags;
     List<string> items;
+
+    List<string> deductions;
+
+    List<string> journalEntries;
 
     public State getCurrentState() {
         return currentState;
@@ -19,18 +23,30 @@ public class Player : ScriptableObject {
         currentState = set;
     }
 
-    public string[] getVarNames() {
+    public List<string> getVarNames() {
         return varNames;
     }
-    public void setVarNames(string[] set) {
+    public void setVarNames(List<string> set) {
         varNames = set;
     }
+    public void addVarName(string var) {
+        varNames.Add(var);
+    }
+    public void addVarNames(List<string> vars) {
+        varNames.AddRange(vars);
+    }
 
-    public int[] getVarVals() {
+    public List<int> getVarVals() {
         return varVals;
     }
-    public void setVarVals(int[] set) {
+    public void setVarVals(List<int> set) {
         varVals = set;
+    }
+    public void addVarVal(int val) {
+        varVals.Add(val);
+    }
+    public void addVarVals(List<int> vals) {
+        varVals.AddRange(vals);
     }
     public void setVarVal(string name, int set) {
         int index = getVarIndex(name);
@@ -45,12 +61,17 @@ public class Player : ScriptableObject {
         return varVals[index];
     }
     private int getVarIndex(string name) {
-        for(int i = 0; i < varNames.Length; i++) {
+        for(int i = 0; i < varNames.Count; i++) {
             if(varNames[i].Equals(name)) {
                 return i;
             }
         }
         return -1;
+    }
+
+    public void clearVars() {
+        varNames.Clear();
+        varVals.Clear();
     }
 
     public List<string> getFlags() {
@@ -61,6 +82,39 @@ public class Player : ScriptableObject {
     }
     public void setFlag(string flag) {
         flags.Add(flag);
+
+        // FOR FLAGS THAT ADD JOURNAL ENTRIES, ADD RELEVANT ENTRY HERE
+        // default will catch any flag that does not add a journal entry, and return before anything is added
+
+        string entry = "";
+
+        switch(flag) {
+            case "clue_a":
+                entry = "I found clue A";
+                break;
+            case "clue_b":
+                entry = "I found clue B";
+                break;
+            case "clue_c":
+                entry = "I found clue C";
+                break;
+            case "clue_d":
+                entry = "I found clue D";
+                break;
+            case "clue_e":
+                entry = "I found clue E";
+                break;
+            case "clue_f":
+                entry = "I found clue F";
+                break;
+            default:
+                return;
+        }
+
+        journalEntries.Add(entry);
+    }
+    public void addFlags(List<string> flags) {
+        flags.AddRange(flags);
     }
     public void killFlag(string flag) {
         flags.Remove(flag);
@@ -71,6 +125,10 @@ public class Player : ScriptableObject {
         } else {
             return false;
         }
+    }
+    public void clearFlags() {
+        flags.Clear();
+        journalEntries.Clear();
     }
     private int getFlagIndex(string name) {
         for(int i = 0; i < flags.Count; i++) {
@@ -97,8 +155,14 @@ public class Player : ScriptableObject {
     public void setItem(string item) {
         items.Add(item);
     }
+    public void addItems(List<string> items) {
+        items.AddRange(items);
+    }
     public void killItem(string item) {
         items.Remove(item);
+    }
+    public void clearItems() {
+        items.Clear();
     }
     private int getItemIndex(string name) {
         for(int i = 0; i < items.Count; i++) {
@@ -139,5 +203,25 @@ public class Player : ScriptableObject {
             // Add an entry for each item the player can carry
         }
         return invString;
+    }
+
+    public List<string> getDeductions() {
+        return deductions;
+    }
+
+    public List<string> getJournalEntries() {
+        return journalEntries;
+    }
+
+    public string getJournalText() {
+
+        string journalText = "JOURNAL\n-------\n";
+        for(int i = journalEntries.Count - 1; i >= 0; i--) {
+            journalText += journalEntries[i];
+            if(i > 0) {
+                journalText += "\n\n";
+            }
+        }
+        return journalText;
     }
 }

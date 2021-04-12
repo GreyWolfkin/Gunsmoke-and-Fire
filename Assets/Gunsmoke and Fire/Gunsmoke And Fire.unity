@@ -414,7 +414,7 @@ MonoBehaviour:
   storyField: {fileID: 376717717}
   optionsField: {fileID: 941727493}
   chapterField: {fileID: 182857463}
-  startingState: {fileID: 11400000, guid: 7c9d4c6f19bb6b8429ff0da6f58c3566, type: 2}
+  startingState: {fileID: 11400000, guid: cd76af3ba45701f43aebd7ecddb2be14, type: 2}
   invState: {fileID: 11400000, guid: e2a2a0943c45062409d0eb339d026dbb, type: 2}
   journalState: {fileID: 11400000, guid: bf70146d1f9f04443a3caf8d8d6355bb, type: 2}
   p: {fileID: 11400000, guid: 114cde7f98b9a9b4eaa49d601cb1f56e, type: 2}
