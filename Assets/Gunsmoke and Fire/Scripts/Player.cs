@@ -7,15 +7,15 @@ public class Player : ScriptableObject {
 
     State currentState;
 
-    List<string> varNames;
-    List<int> varVals;
-    List<string> flags;
-    List<string> items;
+    List<string> varNames = new List<string>();
+    List<int> varVals = new List<int>();
+    List<string> flags = new List<string>();
+    List<string> items = new List<string>();
 
     List<string> deductions;
 
-    List<string> journalEntries;
-    List<string> inventoryEntries;
+    List<string> journalEntries = new List<string>();
+    List<string> inventoryEntries = new List<string>();
 
     public State getCurrentState() {
         return currentState;
