@@ -7,39 +7,44 @@ using UnityEngine.UI;
 
 public class GunsmokeAndFireGameScript : MonoBehaviour {
 
-    // TEST CODE
+    // These AudioSource lists only exist until a better solution can be found
+    // Ideally I'd like to assign AudioSource components to the State, but I can't figure out how to do that
+    // So right now the clunky solution is the one we've got
     [SerializeField] List<AudioSource> soundEffectFiles;
     [SerializeField] List<State> soundEffectTriggerStates;
 
-    List<KeyCode> codes1;
-    List<KeyCode> codes2;
-    List<KeyCode> codes3;
-    List<KeyCode> codes4;
-    List<KeyCode> codes5;
-    List<KeyCode> codes6;
-    List<KeyCode> codes7;
-    List<KeyCode> codes8;
-    List<KeyCode> codes9;
-    List<KeyCode> codes0;
-    List<KeyCode> codesBasic;
+    //
+    KeyCode[] codes1;
+    KeyCode[] codes2;
+    KeyCode[] codes3;
+    KeyCode[] codes4;
+    KeyCode[] codes5;
+    KeyCode[] codes6;
+    KeyCode[] codes7;
+    KeyCode[] codes8;
+    KeyCode[] codes9;
+    KeyCode[] codes0;
+    KeyCode[] codesBasic;
+    KeyCode[][] codes;
 
-    List<List<KeyCode>> codesM;
-
-    // KeyCode[][] codesM;
+    string[] stringCodes;
 
 
     [SerializeField] Text storyField;
     [SerializeField] Text optionsField;
     [SerializeField] TextMeshProUGUI chapterField;
     [SerializeField] State startingState;
-    [SerializeField] State invState;
-    [SerializeField] State journalState;
+    // [SerializeField] State invState;
+    // [SerializeField] State journalState;
+
+    State basicState;
+
+    State invState;
+    State journalState;
 
     State currentState;
     State[] childStates;
     List<State> availableStates = new List<State>();
-    State[] nextStates;
-    List<State> tempStates;
 
     bool previousStateWasBasic = false;
 
@@ -51,19 +56,26 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        codes1 = new List<KeyCode>(new KeyCode[] { KeyCode.Alpha1, KeyCode.Keypad1, KeyCode.Return, KeyCode.KeypadEnter });
-        codes2 = new List<KeyCode>(new KeyCode[] { KeyCode.Alpha2, KeyCode.Keypad2 });
-        codes3 = new List<KeyCode>(new KeyCode[] { KeyCode.Alpha3, KeyCode.Keypad3 });
-        codes4 = new List<KeyCode>(new KeyCode[] { KeyCode.Alpha4, KeyCode.Keypad4 });
-        codes5 = new List<KeyCode>(new KeyCode[] { KeyCode.Alpha5, KeyCode.Keypad5 });
-        codes6 = new List<KeyCode>(new KeyCode[] { KeyCode.Alpha6, KeyCode.Keypad6 });
-        codes7 = new List<KeyCode>(new KeyCode[] { KeyCode.Alpha7, KeyCode.Keypad7 });
-        codes8 = new List<KeyCode>(new KeyCode[] { KeyCode.Alpha8, KeyCode.Keypad8 });
-        codes9 = new List<KeyCode>(new KeyCode[] { KeyCode.Alpha9, KeyCode.Keypad9 });
-        codes0 = new List<KeyCode>(new KeyCode[] { KeyCode.Alpha0, KeyCode.Keypad0 });
-        codesBasic = new List<KeyCode>(new KeyCode[] { KeyCode.I, KeyCode.J, KeyCode.Q });
 
-        codesM = new List<List<KeyCode>>(new List<KeyCode>[] { codes1, codes2, codes3, codes4, codes5, codes6, codes7, codes8, codes9, codes0, codesBasic });
+        basicState = ScriptableObject.CreateInstance<State>();
+
+        invState = ScriptableObject.CreateInstance<State>();
+        journalState = ScriptableObject.CreateInstance<State>();
+
+        codes1 = new KeyCode[] { KeyCode.Alpha1, KeyCode.Keypad1, KeyCode.Return, KeyCode.KeypadEnter };
+        codes2 = new KeyCode[] { KeyCode.Alpha2, KeyCode.Keypad2 };
+        codes3 = new KeyCode[] { KeyCode.Alpha3, KeyCode.Keypad3 };
+        codes4 = new KeyCode[] { KeyCode.Alpha4, KeyCode.Keypad4 };
+        codes5 = new KeyCode[] { KeyCode.Alpha5, KeyCode.Keypad5 };
+        codes6 = new KeyCode[] { KeyCode.Alpha6, KeyCode.Keypad6 };
+        codes7 = new KeyCode[] { KeyCode.Alpha7, KeyCode.Keypad7 };
+        codes8 = new KeyCode[] { KeyCode.Alpha8, KeyCode.Keypad8 };
+        codes9 = new KeyCode[] { KeyCode.Alpha9, KeyCode.Keypad9 };
+        codes0 = new KeyCode[] { KeyCode.Alpha0, KeyCode.Keypad0 };
+        codesBasic = new KeyCode[] { KeyCode.Q, KeyCode.J, KeyCode.I };
+        codes = new KeyCode[][] { codes1, codes2, codes3, codes4, codes5, codes6, codes7, codes8, codes9, codes0, codesBasic };
+
+        stringCodes = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "q", "i", "j" };
 
         world = new World();
         currentState = startingState;
@@ -73,53 +85,55 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         p.setCurrentState(currentState);
         setAvailableStates();
         storyField.text = currentState.getStoryText(p);
-        ManageState(-1);
+        ManageState();
     }
 
     // Update is called once per frame
     void Update() {
+        /*
+        if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
+            Debug.Log("Enter");
+        } else if(Input.inputString == "1") {  
+            Debug.Log("1");
+        }
+        */
         listen();
     }
 
-    // TEST CODE
-
-    /*
-
-    private void listen() {
-        for(int i = 0; i < codesM.Count; i++) {
-            for(int j = 0; i < codesM[i].Count; j++) {
-                if(Input.GetKeyDown(codesM[i][j])) {
-                    if(currentState != journalState && currentState != invState) {
-                        manageKeystroke(i, j);
-                    } else {
-                        basicStateKeystroke(i);
-                    }
-                }
+    private int getIndex(string code) {
+        for(int i = 0; i < stringCodes.Length; i++) {
+            if(code == stringCodes[i]) {
+                return i;
             }
         }
+        return -1;
     }
 
-    private void manageKeystroke(int code, int opt) {
-        if(code == 10) {
-            if(opt == 0) {
-                currentState = invState;
-                previousStateWasBasic = true;
-                readInventory();
-            } else if(opt == 1) {
-                currentState = journalState;
-                previousStateWasBasic = true;
-                readJournal();
-            } else if(opt == 2) {
-                // UnityEditor.EditorApplication.isPlaying = false;
-                Application.Quit();
+    private void listen() {
+
+        if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
+            if(currentState != invState && currentState != journalState) {
+                manageKeystroke(0);
+                return;
+            } else {
+                basicStateKeystroke(0);
+                return;
             }
+        }
+
+        string input = Input.inputString;
+        if(input.Length == 0) {
+            return;
+        }
+        if(currentState != invState && currentState != journalState) {
+            manageKeystroke(getIndex(input));
+            return;
         } else {
-            ManageState(code);
+            basicStateKeystroke(getIndex(input));
+            return;
         }
-    }
-    */
 
-    private void listen() {
+        /*
 
         KeyCode[] codes = { KeyCode.Alpha1, KeyCode.Keypad1, KeyCode.Return, KeyCode.KeypadEnter, KeyCode.Alpha2, KeyCode.Keypad2, KeyCode.Alpha3, KeyCode.Keypad3, KeyCode.Alpha4, KeyCode.Keypad4, KeyCode.Alpha5, KeyCode.Keypad5, KeyCode.Alpha6, KeyCode.Keypad6, KeyCode.Alpha7, KeyCode.Keypad7, KeyCode.Alpha8, KeyCode.Keypad8, KeyCode.Alpha9, KeyCode.Keypad9, KeyCode.Alpha0, KeyCode.Keypad0, KeyCode.I, KeyCode.J, KeyCode.Q };
 
@@ -132,130 +146,93 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
                 }
             }
         }
+        */
+    }
+
+    private bool containsKey(KeyCode[] keyArr, KeyCode code) {
+        foreach(KeyCode key in keyArr) {
+            if(code == key) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool containsKey(KeyCode code) {
+        foreach(KeyCode[] codeArr in codes) {
+            if(containsKey(codeArr, code)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int indexOfKeystroke(KeyCode code) {
+        for(int i = 0; i < codes.Length; i++) {
+            if(containsKey(codes[i], code)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void manageKeystroke(int code) {
+        if(code == 10) {
+            // Q - Quit
+            UnityEditor.EditorApplication.isPlaying = false;
+            Application.Quit();
+        } else if(code == 11) {
+            // I - Inventory
+            currentState = invState;
+            previousStateWasBasic = true;
+            readInventory();
+        } else if(code == 12) {
+            // J - Journal
+            currentState = journalState;
+            previousStateWasBasic = true;
+            readJournal();
+        } else {
+            // 1 thru 0
+            changeState(code);
+            ManageState();
+        }
     }
 
     private void manageKeystroke(KeyCode code) {
-        switch(code) {
-            case KeyCode.Q:
-                // UnityEditor.EditorApplication.isPlaying = false;
-                Application.Quit();
-                break;
-            case KeyCode.I:
-                currentState = invState;
-                previousStateWasBasic = true;
-                readInventory();
-                break;
-            case KeyCode.J:
-                currentState = journalState;
-                previousStateWasBasic = true;
-                readJournal();
-                break;
-            case KeyCode.Alpha1:
-            case KeyCode.Keypad1:
-            case KeyCode.Return:
-            case KeyCode.KeypadEnter:
-                ManageState(0);
-                break;
-            case KeyCode.Alpha2:
-            case KeyCode.Keypad2:
-                ManageState(1);
-                break;
-            case KeyCode.Alpha3:
-            case KeyCode.Keypad3:
-                ManageState(2);
-                break;
-            case KeyCode.Alpha4:
-            case KeyCode.Keypad4:
-                ManageState(3);
-                break;
-            case KeyCode.Alpha5:
-            case KeyCode.Keypad5:
-                ManageState(4);
-                break;
-            case KeyCode.Alpha6:
-            case KeyCode.Keypad6:
-                ManageState(5);
-                break;
-            case KeyCode.Alpha7:
-            case KeyCode.Keypad7:
-                ManageState(6);
-                break;
-            case KeyCode.Alpha8:
-            case KeyCode.Keypad8:
-                ManageState(7);
-                break;
-            case KeyCode.Alpha9:
-            case KeyCode.Keypad9:
-                ManageState(8);
-                break;
-            case KeyCode.Alpha0:
-            case KeyCode.Keypad0:
-                ManageState(9);
-                break;
-        }
-    }
 
-    // END OF TEST CODE
+        if(code == KeyCode.Q) {
+            // UnityEditor.EditorApplication.isPlaying = false;
+            Application.Quit();
+        } else if(code == KeyCode.I) {
+            // currentState = invState;
+            currentState = basicState;
+            previousStateWasBasic = true;
+            readInventory();
+        } else if(code == KeyCode.J) {
+            // currentState = journalState;
+            currentState = basicState;
+            previousStateWasBasic = true;
+            readJournal();
+        } else {
+            changeState(indexOfKeystroke(code));
+            ManageState();
 
-    /*
-     *  GOOD CODE, UNCOMMENT IF BROKEN
-     */
-
-    /*
-    private void listen() {
-
-        KeyCode[] codes = { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9, KeyCode.Alpha0, KeyCode.Return, KeyCode.I, KeyCode.J, KeyCode.Q };
-
-        foreach(KeyCode code in codes) {
-            if(Input.GetKeyDown(code)) {
-                if(currentState != journalState && currentState != invState) {
-                    manageKeystroke(code, codes);
-                } else {
-                    basicStateKeystroke(code);
+            /*
+            for(int i = 0; i < codesM.Length; i++) {
+                if(codesM[i].Contains(code)) {
+                    ManageState(i);
                 }
             }
+            */
         }
     }
 
-    private void manageKeystroke(KeyCode code, KeyCode[] codes) {
-        switch(code) {
-            case KeyCode.Q:
-                // UnityEditor.EditorApplication.isPlaying = false;
-                Application.Quit();
-                break;
-            case KeyCode.I:
-                currentState = invState;
-                previousStateWasBasic = true;
-                readInventory();
-                break;
-            case KeyCode.J:
-                currentState = journalState;
-                previousStateWasBasic = true;
-                readJournal();
-                break;
-            case KeyCode.Return:
-                ManageState(0);
-                break;
-            default:
-                for(int i = 0; i < codes.Length; i++) {
-                    if(codes[i] == code) {
-                        ManageState(i);
-                    }
-                }
-                break;
-        }
-    }
-
-    */
-
-    /*
-     * END OF GOOD CODE
-     */
-
-    private void basicStateKeystroke(KeyCode code) {
+    private void basicStateKeystroke(int code) {
         if((currentState == journalState && p.getJournalEntries().Count <= page * 3 + 3) ||
             (currentState == invState && p.getInventoryEntries().Count <= page * 3 + 3)) {
-            if(codes1.Contains(code)) {
+            // if(codes1.Contains(code)) {
+            // if(containsKey(codes1, code)) {
+            if(code == 0) { 
                 page = 0;
                 currentState = p.getCurrentState();
                 storyField.text = currentState.getStoryText(p);
@@ -271,14 +248,65 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
                 previousStateWasBasic = false;
             }
         } else {
-            if(codes1.Contains(code)) {
+            // if(codes1.Contains(code)) {
+            // if(containsKey(codes1, code)) {
+            if(code == 0) {
                 page++;
                 if(currentState == journalState) {
                     readJournal();
                 } else if(currentState == invState) {
                     readInventory();
                 }
-            } else if(codes2.Contains(code)) {
+            //} else if(codes2.Contains(code)) {
+            // } else if(containsKey(codes2, code)) {
+            } else if(code == 1) { 
+                page = 0;
+                currentState = p.getCurrentState();
+                storyField.text = currentState.getStoryText(p);
+                optionsField.text = "";
+                if(!currentState.getChildStates()[0].getOptText().Equals("(Continue)") && !currentState.getChildStates()[0].getOptText().Equals("(Press Enter to Continue)")) {
+                    for(int i = 0; i < availableStates.Count; i++) {
+                        optionsField.text += (i + 1) + " - " + availableStates[i].getOptText() + "\n";
+                    }
+                    optionsField.text += "I - Inventory\nJ - Journal\nQ - Quit";
+                } else {
+                    optionsField.text += availableStates[0].getOptText();
+                }
+                previousStateWasBasic = false;
+            }
+        }
+    }
+
+    private void basicStateKeystroke(KeyCode code) {
+        if((currentState == journalState && p.getJournalEntries().Count <= page * 3 + 3) ||
+            (currentState == invState && p.getInventoryEntries().Count <= page * 3 + 3)) {
+            // if(codes1.Contains(code)) {
+            if(containsKey(codes1, code)) { 
+                page = 0;
+                currentState = p.getCurrentState();
+                storyField.text = currentState.getStoryText(p);
+                optionsField.text = "";
+                if(!currentState.getChildStates()[0].getOptText().Equals("(Continue)") && !currentState.getChildStates()[0].getOptText().Equals("(Press Enter to Continue)")) {
+                    for(int i = 0; i < availableStates.Count; i++) {
+                        optionsField.text += (i + 1) + " - " + availableStates[i].getOptText() + "\n";
+                    }
+                    optionsField.text += "I - Inventory\nJ - Journal\nQ - Quit";
+                } else {
+                    optionsField.text += availableStates[0].getOptText();
+                }
+                previousStateWasBasic = false;
+            }
+        } else {
+            // if(codes1.Contains(code)) {
+            if(containsKey(codes1, code)) {
+                page++;
+                if(currentState == journalState) {
+                    readJournal();
+                } else if(currentState == invState) {
+                    readInventory();
+                }
+            //} else if(codes2.Contains(code)) {
+            } else if(containsKey(codes2, code)) { 
                 page = 0;
                 currentState = p.getCurrentState();
                 storyField.text = currentState.getStoryText(p);
@@ -341,37 +369,37 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             optionsField.text = "1 - Next Page\n2 - Return";
         }
     }
-    private void ManageState(int opt) {
-        if(opt != -1) {
-            for(int i = 0; i < availableStates.Count; i++) {
-                if(opt == i) {
-                    currentState = availableStates[opt];
-                    p.setCurrentState(currentState);
-                    storyField.text = currentState.getStoryText(p);
-                    if(!previousStateWasBasic) {
-                        currentState.managePlayer(p);
-                    }
-                    previousStateWasBasic = false;
+
+    private void changeState(int opt) {
+        for(int i = 0; i < availableStates.Count; i++) {
+            if(opt == i) {
+                currentState = availableStates[opt];
+                p.setCurrentState(currentState);
+                storyField.text = currentState.getStoryText(p);
+                if(!previousStateWasBasic) {
+                    currentState.managePlayer(p);
                 }
+                previousStateWasBasic = false;
             }
         }
+    }
+
+    private void ManageState() {
         if(currentState.hasChapterTitle()) {
             chapterField.text = currentState.getChapterTitle();
         }
         playSoundEffects();
         setAvailableStates();
         optionsField.text = "";
-        if(!currentState.isBasic()) {
-            if(!currentState.getChildStates()[0].getOptText().Equals("(Continue)") && !currentState.getChildStates()[0].getOptText().Equals("(Press Enter to Continue)")) {
-                for(int i = 0; i < availableStates.Count; i++) {
-                    optionsField.text += (i + 1) + " - " + availableStates[i].getOptText() + "\n";
-                }
-                optionsField.text += "I - Inventory\nJ - Journal\nQ - Quit";  
-            } else {
-                optionsField.text += availableStates[0].getOptText();
+        if(availableStates.Count == 0) {
+            optionsField.text = "Q - Quit";
+        } else if(!currentState.getChildStates()[0].getOptText().Equals("(Continue)") && !currentState.getChildStates()[0].getOptText().Equals("(Press Enter to Continue)")) {
+            for(int i = 0; i < availableStates.Count; i++) {
+                optionsField.text += (i + 1) + " - " + availableStates[i].getOptText() + "\n";
             }
+            optionsField.text += "I - Inventory\nJ - Journal\nQ - Quit";
         } else {
-            optionsField.text += "(Return)";
+            optionsField.text += availableStates[0].getOptText();
         }
     }
 
@@ -390,9 +418,11 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     }
 
     private void playSoundEffects() {
+        foreach(AudioSource audio in soundEffectFiles) {
+            audio.Stop();
+        }
         for(int i = 0; i < soundEffectTriggerStates.Count; i++) {
             if(soundEffectTriggerStates[i] == currentState && !previousStateWasBasic) {
-                Debug.Log("Play SFX");
                 soundEffectFiles[i].Play();
             }
         }

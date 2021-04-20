@@ -28,7 +28,8 @@ MonoBehaviour:
   chapterTitle: 
   locked: 0
   childStates:
-  - {fileID: 11400000, guid: 9f091aad93fb8c740a762560f55ff301, type: 2}
+  - {fileID: 11400000, guid: 5b5bd30e14dc6b04db1d25333f1dc89d, type: 2}
   parameters: 
   setFunctions: 
   initialSettings: 
+  audio: {fileID: 0}
