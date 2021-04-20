@@ -10,20 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
-  m_Name: 0-0-1_Introduction
+  m_Name: 0-0-2_Intro
   m_EditorClassIdentifier: 
   basic: 0
   initializePlayer: 0
-  storyText: 'Welcome to Gunsmoke and Fire, an interactive narrative.
-
-
-    In this
-    story, you will play the role of Detective Leo Hearn. Your first objective is
-    to gather as many clues as you can to try and piece together who you fought with,
-    how they knocked you out, and what they wanted.
-
-    Make selections with the
-    number keys, or press Enter to continue when an option isn''t presented.'
+  storyText: "******************************\nWelcome to Gunsmoke and Fire, an interactive
+    narrative.\n\nIn this story, you will play the role of Detective Leo Hearn.\nYour
+    first objective is to gather as many clues as you can to try and piece together
+    who you fought with, how they knocked you out, and what they wanted.\nMake selections
+    with the number keys, or press Enter to continue when an option isn't presented.
+    \n******************************"
   optText: (Press Enter to Continue)
   chapterTitle: 
   locked: 0

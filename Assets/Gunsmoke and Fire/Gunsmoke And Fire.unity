@@ -195,7 +195,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 67f187c4118a2804f91c1f9efc365a18, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.75
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -569,6 +569,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca8c62c55f4a6234490dc9b6dd7a8605, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  storyField: {fileID: 376717717}
+  optionsField: {fileID: 941727493}
+  chapterField: {fileID: 182857463}
+  p: {fileID: 11400000, guid: 114cde7f98b9a9b4eaa49d601cb1f56e, type: 2}
+  startingState: {fileID: 11400000, guid: 7c9d4c6f19bb6b8429ff0da6f58c3566, type: 2}
   soundEffectFiles:
   - {fileID: 1454757702}
   - {fileID: 136457525}
@@ -577,13 +582,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 162eba7aca8cb9a4b907651f6b296465, type: 2}
   - {fileID: 11400000, guid: 60d261420c4d80442901e0fe190b3bc7, type: 2}
   - {fileID: 11400000, guid: d0620167c964be846a758ccc981017f3, type: 2}
-  storyField: {fileID: 376717717}
-  optionsField: {fileID: 941727493}
-  chapterField: {fileID: 182857463}
-  startingState: {fileID: 11400000, guid: 7c9d4c6f19bb6b8429ff0da6f58c3566, type: 2}
-  invState: {fileID: 11400000, guid: e2a2a0943c45062409d0eb339d026dbb, type: 2}
-  journalState: {fileID: 11400000, guid: bf70146d1f9f04443a3caf8d8d6355bb, type: 2}
-  p: {fileID: 11400000, guid: 114cde7f98b9a9b4eaa49d601cb1f56e, type: 2}
 --- !u!4 &188592247
 Transform:
   m_ObjectHideFlags: 0

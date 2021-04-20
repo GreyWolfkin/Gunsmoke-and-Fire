@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
-  m_Name: 0-0-10_YourselfRepeat
+  m_Name: 0-0-7_DeskRepeat
   m_EditorClassIdentifier: 
   basic: 0
   initializePlayer: 0
-  storyText: You've already looked yourself over. Someone tried to bump you off,
-    but they didn't do the job proper.
-  optText: Examine yourself
+  storyText: You've checked the desk already. Seems like you used it for cover when
+    your assailant started throwing lead.
+  optText: Examine the desk
   chapterTitle: 
   locked: 0
   childStates:
   - {fileID: 11400000, guid: 9f091aad93fb8c740a762560f55ff301, type: 2}
-  parameters: clues_found%VAR_REQ%<%4|examined_self%FLAG_REQ
+  parameters: clues_found%VAR_REQ%<%4|examined_desk%FLAG_REQ
   setFunctions: 
   initialSettings: 
+  audio: {fileID: 0}

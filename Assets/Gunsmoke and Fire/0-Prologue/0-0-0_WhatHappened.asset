@@ -10,17 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
-  m_Name: 0-0-5_DeskRepeat
+  m_Name: 0-0-0_WhatHappened
   m_EditorClassIdentifier: 
   basic: 0
-  initializePlayer: 0
-  storyText: You've checked the desk already. Seems like you used it for cover when
-    your assailant started throwing lead.
-  optText: Examine the desk
-  chapterTitle: 
+  initializePlayer: 1
+  storyText: 'It''s 2 a.m., according to your watch. You lay your head back down
+    on the hardwood floor. Another drunken night?
+
+    No.'
+  optText: 
+  chapterTitle: Prologue - What Happened?
   locked: 0
   childStates:
-  - {fileID: 11400000, guid: 9f091aad93fb8c740a762560f55ff301, type: 2}
-  parameters: clues_found%VAR_REQ%<%4|examined_desk%FLAG_REQ
+  - {fileID: 11400000, guid: 7a23ef6e0f5a7f84ca3470316191c9c7, type: 2}
+  parameters: 
   setFunctions: 
-  initialSettings: 
+  initialSettings: TRUE%CLEAR|clues_found%VAR%0
+  audio: {fileID: 0}

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
-  m_Name: 0-0-15_Leave
+  m_Name: 0-0-17_Leave
   m_EditorClassIdentifier: 
   basic: 0
   initializePlayer: 0
   storyText: "You grab your coat, thinking over what you've learned. Some hard customer
     found you in your office. There was a shoot-out. They clipped you in the head
     and put you to sleep. Then they went through the place, stole evidence from a
-    4 year-old cold case, and made a clean sneak. You try to remember their face,
+    four year-old cold case, and made a clean sneak. You try to remember their face,
     but everything's hazy.\r\n\r\nWho tried to kill you? None of Rich's boys use
     magic. The Li's are doing a three-spot up north. Jimmy Donovan did the dance
     two months ago, you watched him swing.\r"
@@ -29,3 +29,4 @@ MonoBehaviour:
   parameters: clues_found%VAR_REQ%==%4
   setFunctions: 
   initialSettings: 
+  audio: {fileID: 0}

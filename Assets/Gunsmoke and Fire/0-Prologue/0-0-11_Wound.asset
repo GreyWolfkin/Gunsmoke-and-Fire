@@ -10,16 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
-  m_Name: 0-0-14_LeaveFail
+  m_Name: 0-0-11_Wound
   m_EditorClassIdentifier: 
   basic: 0
   initializePlayer: 0
-  storyText: You're not ready to leave yet. There are more questions still to answer.
-  optText: Leave
+  storyText: 'The mirror on the wall is cracked, but it''ll do. You clench your jaw
+    and pull your hair back to look at the damage.
+
+
+    It''s bad. Someone put a
+    pill right past your ear and very nearly rubbed you out. Maybe they thought they''d
+    done the job, but all it did was cool you for a few hours.'
+  optText: (Continue)
   chapterTitle: 
   locked: 0
   childStates:
   - {fileID: 11400000, guid: 9f091aad93fb8c740a762560f55ff301, type: 2}
-  parameters: clues_found%VAR_REQ%<%4
-  setFunctions: 
+  parameters: 
+  setFunctions: examined_self%FLAG_SET
   initialSettings: 
+  audio: {fileID: 0}
