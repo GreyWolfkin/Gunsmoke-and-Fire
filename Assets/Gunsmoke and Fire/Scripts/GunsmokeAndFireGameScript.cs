@@ -16,7 +16,6 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Comment state code
      *      Find a cleaner way to store audio files and state triggers
      *      Build framework for puzzle-solving mechanic
-     *      Standardize use of "inventory" vs "inv"
      *      Add ability to remove journal entries
      *      Add ability to remove inventory items
      *      Add plot point of missing spells? Have only limited spells at the beginning, add more?
@@ -26,26 +25,36 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     /*
      * BUGS
-     *      YAY! No current Bugs!
+     *      Opening Journal or Inventory on final screen throws IndexOutOfBoundsException. Cannot return from basic state
      */
 
     /*
      * COMPLETED TASKS
      *      Reorganize variable and method declaration, lay things out in an order that makes sense and is easy to read
      *      Create fade in/out for text
+     *      Standardize use of "inventory" vs "inv"
+     *      Clean up "Continue" option checks
      */
 
+    // Text Fields for displaying story text and options text.
+    // chapterField uses TextMeshProUGUI for fancy "noir" font
     [SerializeField] Text storyField;
     [SerializeField] Text optionsField;
     [SerializeField] TextMeshProUGUI chapterField;
 
+    // Fields which store temporary story and options text to fade in/out over existing text
     [SerializeField] Text overlayStoryField;
     [SerializeField] Text overlayOptionsField;
 
     [SerializeField] Player p;
+
+    // currentState stores temporary values that can modify Player.currentState
     State currentState;
 
     [SerializeField] State startingState;
+
+    // childStates uses an array and is populated by State.getChildStates
+    // availableStates uses a List because it needs to add states one at a time from childStates if they meet necessary criteria
     State[] childStates;
     List<State> availableStates = new List<State>();
 
@@ -55,29 +64,41 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     [SerializeField] List<AudioSource> soundEffectFiles;
     [SerializeField] List<State> soundEffectTriggerStates;
 
+    // Populated with accepted input values. Uses index of input value for navigation
     string[] codes;
 
+    // If the previous state was Inventory or Journal (i.e. "basic states"), then navigating back to the primary state should not reinitialize variables or replay SFX
+    // previousStateWasBasic is set <true> when navigating to Inventory or Journal, and set <false> when navigating back to primary state or to another non-basic state
     bool previousStateWasBasic = false;
-    State invState;
+
+    // inventoryState and journalState need to be created within Start so that currentState can be set to these for navigation and read purposes
+    State inventoryState;
     State journalState;
 
+    // What "page" of inventory or journal the user is looking at. Resets to 0 when leaving the inventory or journal state
     int page = 0;
 
 
     // Start is called before the first frame update
     void Start() {
 
+        // Set Alpha to 0 for overlayStoryField and overlayOptionsField
         overlayStoryField.CrossFadeAlpha(0, 0.0f, false);
         overlayOptionsField.CrossFadeAlpha(0, 0.0f, false);
+
+        // Set story and options to empty, so that starting state can fade in
         storyField.text = "";
         optionsField.text = "";
 
-        invState = ScriptableObject.CreateInstance<State>();
+        // Create instance of State for inventoryState and journalState
+        inventoryState = ScriptableObject.CreateInstance<State>();
         journalState = ScriptableObject.CreateInstance<State>();
 
         codes = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "q", "i", "j" };
 
         currentState = startingState;
+
+        // If starting state is set to a different state for debugging purposes, or if loading a saved game, if the starting state does not have the initializesPlayer bool, do not reinitialize player variables
         if(currentState.initializesPlayer()) {
             currentState.initPlayer(p);
         }
@@ -87,19 +108,35 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        // listen is used to abstract input handling and clean up Update method
+        // A clean Update method makes it easier to add additional code in the future, if necessary
         listen();
     }
 
+    // textFadeHandler fades old text out and new text in for scene transitions
+    // Chapter heading does not fade in/out, because I'm not sure how CrossFadeAlpha will work with TextMeshProUGUI
     IEnumerator textFadeHandler(string storyText, string optionsText) {
+        // Sets overlayStoryField to the new story text, then cross-fades the old text with the overlay
         overlayStoryField.text = storyText;
         storyField.CrossFadeAlpha(0, 0.2f, false);
         overlayStoryField.CrossFadeAlpha(1, 0.2f, false);
+
+        // If the new options text is different than the old options text, do a cross-fade
+        // Otherwise, do not cross-fade
+        // This prevents the annoying "fade-in-fade-out" effect if the options text does not change
+        //      e.g. when both options are "(Continue)"
         if(optionsText != optionsField.text) {
             overlayOptionsField.text = optionsText;
             optionsField.CrossFadeAlpha(0, 0.2f, false);
             overlayOptionsField.CrossFadeAlpha(1, 0.2f, false);
         }
+
+        // <yeild return new WaitForSeconds(seconds)> forces the Coroutine to wait
+        // In this case, wait the length of time necessary for the texts to cross-fade
         yield return new WaitForSeconds(0.2f);
+
+        // Set the story and options fields to the new values, then fade out the overlay and fade in the default fields instantly
+        // This resets alpha for the fields to the correct values, so that cross-fade can be used again next time the scene transitions
         storyField.text = storyText;
         optionsField.text = optionsText;
         storyField.CrossFadeAlpha(1, 0.0f, false);
@@ -108,9 +145,21 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         overlayOptionsField.CrossFadeAlpha(0, 0.0f, false);
     }
 
+    // listen abstracts input handling out of Update
     private void listen() {
-        if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
-            if(currentState != invState && currentState != journalState) {
+        // Passes 0 to manageKeystroke or manageBasicKeystroke if either Enter key is pressed
+        // 0 is the correct value if the user is pressing 0 to Continue
+        // TODO (maybe)
+        //      Consider only using Enter if the scene has only one child state?
+        //          That way Enter doesn't equal "1" any other time
+
+        // TEST CODE
+        if(
+            (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) && 
+            currentStateHasContinueOption()
+            ) {
+        // ifInput.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
+            if(currentState != inventoryState && currentState != journalState) {
                 manageKeystroke(0);
                 return;
             } else {
@@ -123,7 +172,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         if(input.Length == 0) {
             return;
         }
-        if(currentState != invState && currentState != journalState) {
+        if(currentState != inventoryState && currentState != journalState) {
             manageKeystroke(getIndex(input));
             return;
         } else {
@@ -139,7 +188,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             Application.Quit();
         } else if(code == 11) {
             // I - Inventory
-            currentState = invState;
+            currentState = inventoryState;
             previousStateWasBasic = true;
             readInventory();
         } else if(code == 12) {
@@ -155,7 +204,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     private void manageBasicKeystroke(int code) {
         if((currentState == journalState && p.getJournalEntries().Count <= page * 3 + 3) ||
-            (currentState == invState && p.getInventoryEntries().Count <= page * 3 + 3)) {
+            (currentState == inventoryState && p.getInventoryEntries().Count <= page * 3 + 3)) {
             if(code == 0) {
                 page = 0;
                 currentState = p.getCurrentState();
@@ -167,7 +216,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
                 page++;
                 if(currentState == journalState) {
                     readJournal();
-                } else if(currentState == invState) {
+                } else if(currentState == inventoryState) {
                     readInventory();
                 }
             } else if(code == 1) {
@@ -201,7 +250,9 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         string optionsText = "";
         if(availableStates.Count == 0) {
             optionsText = "Q - Quit";
-        } else if(!currentState.getChildStates()[0].getOptText().Equals("(Continue)") && !currentState.getChildStates()[0].getOptText().Equals("(Press Enter to Continue)")) {
+        // TEST CODE
+        } else if(!currentStateHasContinueOption()) { 
+        // } else if(!currentState.getChildStates()[0].getOptText().Equals("(Continue)") && !currentState.getChildStates()[0].getOptText().Equals("(Press Enter to Continue)")) {
             for(int i = 0; i < availableStates.Count; i++) {
                 optionsText += (i + 1) + " - " + availableStates[i].getOptText() + "\n";
             }
@@ -229,16 +280,16 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     private void readInventory() {
         List<string> inventoryEntries = p.getInventoryEntries();
-        string invText = "";
+        string inventoryText = "";
         string optionsText = "";
         if(page == 0) {
-            invText += "INVENTORY\n---------\n\n";
+            inventoryText += "INVENTORY\n---------\n\n";
         }
         for(int i = page * 3; i < inventoryEntries.Count; i++) {
             if(i != page * 3) {
-                invText += "\n\n";
+                inventoryText += "\n\n";
             }
-            invText += inventoryEntries[i];
+            inventoryText += inventoryEntries[i];
             if(i == inventoryEntries.Count - 1 || i == page * 3 + 2) {
                 break;
             }
@@ -248,7 +299,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         } else {
             optionsText = "1 - Next Page\n2 - Return";
         }
-        StartCoroutine(textFadeHandler(invText, optionsText));
+        StartCoroutine(textFadeHandler(inventoryText, optionsText));
     }
 
     private void readJournal() {
@@ -292,6 +343,14 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             }
         }
         return -1;
+    }
+
+    private bool currentStateHasContinueOption() {
+        if(availableStates[0].getOptText().Equals("(Continue)") || availableStates[0].getOptText().Equals("(Press Enter to Continue)")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

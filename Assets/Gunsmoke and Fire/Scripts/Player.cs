@@ -226,12 +226,12 @@ public class Player : ScriptableObject {
         return true;
     }
 
-    public string getInv() {
-        string invString = "";
+    public string getInventory() {
+        string inventoryString = "";
         foreach(string item in items) {
             // Add an entry for each item the player can carry
         }
-        return invString;
+        return inventoryString;
     }
 
     public List<string> getInventoryEntries() {
