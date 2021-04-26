@@ -9,7 +9,6 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     /*
      * TODO
-     *      DONE    Reorganize variable and method declaration, lay things out in an order that makes sense and is easy to read
      *      Finish commenting Engine code
      *      Cleanup Player code
      *      Comment Player code
@@ -21,11 +20,27 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Add ability to remove journal entries
      *      Add ability to remove inventory items
      *      Add plot point of missing spells? Have only limited spells at the beginning, add more?
+     *      Add Save/Load functionality
+     *      Clean up blurry text
+     */
+
+    /*
+     * BUGS
+     *      YAY! No current Bugs!
+     */
+
+    /*
+     * COMPLETED TASKS
+     *      Reorganize variable and method declaration, lay things out in an order that makes sense and is easy to read
+     *      Create fade in/out for text
      */
 
     [SerializeField] Text storyField;
     [SerializeField] Text optionsField;
     [SerializeField] TextMeshProUGUI chapterField;
+
+    [SerializeField] Text overlayStoryField;
+    [SerializeField] Text overlayOptionsField;
 
     [SerializeField] Player p;
     State currentState;
@@ -52,6 +67,11 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
 
+        overlayStoryField.CrossFadeAlpha(0, 0.0f, false);
+        overlayOptionsField.CrossFadeAlpha(0, 0.0f, false);
+        storyField.text = "";
+        optionsField.text = "";
+
         invState = ScriptableObject.CreateInstance<State>();
         journalState = ScriptableObject.CreateInstance<State>();
 
@@ -68,6 +88,24 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         listen();
+    }
+
+    IEnumerator textFadeHandler(string storyText, string optionsText) {
+        overlayStoryField.text = storyText;
+        storyField.CrossFadeAlpha(0, 0.2f, false);
+        overlayStoryField.CrossFadeAlpha(1, 0.2f, false);
+        if(optionsText != optionsField.text) {
+            overlayOptionsField.text = optionsText;
+            optionsField.CrossFadeAlpha(0, 0.2f, false);
+            overlayOptionsField.CrossFadeAlpha(1, 0.2f, false);
+        }
+        yield return new WaitForSeconds(0.2f);
+        storyField.text = storyText;
+        optionsField.text = optionsText;
+        storyField.CrossFadeAlpha(1, 0.0f, false);
+        optionsField.CrossFadeAlpha(1, 0.0f, false);
+        overlayStoryField.CrossFadeAlpha(0, 0.0f, false);
+        overlayOptionsField.CrossFadeAlpha(0, 0.0f, false);
     }
 
     private void listen() {
@@ -112,7 +150,6 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         } else {
             // 1 thru 0
             changeState(code);
-            manageState();
         }
     }
 
@@ -148,6 +185,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
                 currentState = availableStates[opt];
                 p.setCurrentState(currentState);
                 previousStateWasBasic = false;
+                manageState();
             }
         }
     }
@@ -156,23 +194,23 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         if(currentState.hasChapterTitle()) {
             chapterField.text = currentState.getChapterTitle();
         }
-        storyField.text = currentState.getStoryText(p);
         if(!previousStateWasBasic) {
             currentState.managePlayer(p);
         }
-        playSoundEffects();
         setAvailableStates();
-        optionsField.text = "";
+        string optionsText = "";
         if(availableStates.Count == 0) {
-            optionsField.text = "Q - Quit";
+            optionsText = "Q - Quit";
         } else if(!currentState.getChildStates()[0].getOptText().Equals("(Continue)") && !currentState.getChildStates()[0].getOptText().Equals("(Press Enter to Continue)")) {
             for(int i = 0; i < availableStates.Count; i++) {
-                optionsField.text += (i + 1) + " - " + availableStates[i].getOptText() + "\n";
+                optionsText += (i + 1) + " - " + availableStates[i].getOptText() + "\n";
             }
-            optionsField.text += "I - Inventory\nJ - Journal\nQ - Quit";
+            optionsText += "I - Inventory\nJ - Journal\nQ - Quit";
         } else {
-            optionsField.text += availableStates[0].getOptText();
+            optionsText += availableStates[0].getOptText();
         }
+        StartCoroutine(textFadeHandler(currentState.getStoryText(p), optionsText));
+        playSoundEffects();
     }
 
     private void setAvailableStates() {
@@ -192,6 +230,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     private void readInventory() {
         List<string> inventoryEntries = p.getInventoryEntries();
         string invText = "";
+        string optionsText = "";
         if(page == 0) {
             invText += "INVENTORY\n---------\n\n";
         }
@@ -204,17 +243,18 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
                 break;
             }
         }
-        storyField.text = invText;
         if(page * 3 + 3 >= inventoryEntries.Count) {
-            optionsField.text = "(Return)";
+            optionsText = "(Return)";
         } else {
-            optionsField.text = "1 - Next Page\n2 - Return";
+            optionsText = "1 - Next Page\n2 - Return";
         }
+        StartCoroutine(textFadeHandler(invText, optionsText));
     }
 
     private void readJournal() {
         List<string> journalEntries = p.getJournalEntries();
         string journalText = "";
+        string optionsText = "";
         if(page == 0) {
             journalText += "JOURNAL\n-------\n\n";
         }
@@ -227,12 +267,12 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
                 break;
             }
         }
-        storyField.text = journalText;
         if(page * 3 + 3 >= journalEntries.Count) {
-            optionsField.text = "(Return)";
+            optionsText = "(Return)";
         } else {
-            optionsField.text = "1 - Next Page\n2 - Return";
+            optionsText = "1 - Next Page\n2 - Return";
         }
+        StartCoroutine(textFadeHandler(journalText, optionsText));
     }
 
     private void playSoundEffects() {
