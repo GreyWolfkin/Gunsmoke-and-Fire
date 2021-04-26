@@ -20,12 +20,11 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Add ability to remove inventory items
      *      Add plot point of missing spells? Have only limited spells at the beginning, add more?
      *      Add Save/Load functionality
-     *      Clean up blurry text
      */
 
     /*
      * BUGS
-     *      Opening Journal or Inventory on final screen throws IndexOutOfBoundsException. Cannot return from basic state
+     *          
      */
 
     /*
@@ -34,6 +33,8 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Create fade in/out for text
      *      Standardize use of "inventory" vs "inv"
      *      Clean up "Continue" option checks
+     *      Clean up blurry text
+     *      Pick a better text font
      */
 
     // Text Fields for displaying story text and options text.
@@ -147,38 +148,38 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     // listen abstracts input handling out of Update
     private void listen() {
-        // Passes 0 to manageKeystroke or manageBasicKeystroke if either Enter key is pressed
-        // 0 is the correct value if the user is pressing 0 to Continue
-        // TODO (maybe)
-        //      Consider only using Enter if the scene has only one child state?
-        //          That way Enter doesn't equal "1" any other time
 
-        // TEST CODE
-        if(
-            (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) && 
-            currentStateHasContinueOption()
+        if(!previousStateWasBasic) {
+            if(
+                (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) &&
+                currentStateHasContinueOption()
             ) {
-        // ifInput.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
-            if(currentState != inventoryState && currentState != journalState) {
                 manageKeystroke(0);
                 return;
-            } else {
-                manageBasicKeystroke(0);
-                return;
             }
+        } else {
+            if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
+                if(
+                    (currentState == inventoryState && !hasAdditionalPages("inventory")) ||
+                    (currentState == journalState && !hasAdditionalPages("journal"))
+                ) {
+                    manageBasicKeystroke(0);
+                    return;
+                }
+            }
+
         }
 
         string input = Input.inputString;
         if(input.Length == 0) {
             return;
         }
-        if(currentState != inventoryState && currentState != journalState) {
+        if(!previousStateWasBasic) {
             manageKeystroke(getIndex(input));
-            return;
         } else {
             manageBasicKeystroke(getIndex(input));
-            return;
         }
+        return;
     }
 
     private void manageKeystroke(int code) {
@@ -203,8 +204,10 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     }
 
     private void manageBasicKeystroke(int code) {
-        if((currentState == journalState && p.getJournalEntries().Count <= page * 3 + 3) ||
-            (currentState == inventoryState && p.getInventoryEntries().Count <= page * 3 + 3)) {
+        if(
+            (currentState == journalState && !hasAdditionalPages("journal")) ||
+            (currentState == inventoryState && !hasAdditionalPages("inventory"))
+        ) {
             if(code == 0) {
                 page = 0;
                 currentState = p.getCurrentState();
@@ -250,9 +253,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         string optionsText = "";
         if(availableStates.Count == 0) {
             optionsText = "Q - Quit";
-        // TEST CODE
         } else if(!currentStateHasContinueOption()) { 
-        // } else if(!currentState.getChildStates()[0].getOptText().Equals("(Continue)") && !currentState.getChildStates()[0].getOptText().Equals("(Press Enter to Continue)")) {
             for(int i = 0; i < availableStates.Count; i++) {
                 optionsText += (i + 1) + " - " + availableStates[i].getOptText() + "\n";
             }
@@ -294,10 +295,10 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
                 break;
             }
         }
-        if(page * 3 + 3 >= inventoryEntries.Count) {
-            optionsText = "(Return)";
-        } else {
+        if(hasAdditionalPages("inventory")) {
             optionsText = "1 - Next Page\n2 - Return";
+        } else {
+            optionsText = "(Return)";
         }
         StartCoroutine(textFadeHandler(inventoryText, optionsText));
     }
@@ -318,10 +319,10 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
                 break;
             }
         }
-        if(page * 3 + 3 >= journalEntries.Count) {
-            optionsText = "(Return)";
-        } else {
+        if(hasAdditionalPages("journal")) {
             optionsText = "1 - Next Page\n2 - Return";
+        } else {
+            optionsText = "(Return)";
         }
         StartCoroutine(textFadeHandler(journalText, optionsText));
     }
@@ -347,6 +348,22 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     private bool currentStateHasContinueOption() {
         if(availableStates[0].getOptText().Equals("(Continue)") || availableStates[0].getOptText().Equals("(Press Enter to Continue)")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private bool hasAdditionalPages(string screenType) {
+        List<string> entries = new List<string>();
+        if(screenType.Equals("inventory")) {
+            entries = p.getInventoryEntries();
+        } else if(screenType.Equals("journal")) {
+            entries = p.getJournalEntries();
+        } else {
+            Debug.Log("Bad screenType passed to hasAdditionalPages()\nReceived " + screenType);
+        }
+        if(page * 3 + 3 < entries.Count) {
             return true;
         } else {
             return false;
