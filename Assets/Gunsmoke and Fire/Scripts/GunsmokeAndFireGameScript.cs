@@ -185,7 +185,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     private void manageKeystroke(int code) {
         if(code == 10) {
             // Q - Quit
-            UnityEditor.EditorApplication.isPlaying = false;
+            // UnityEditor.EditorApplication.isPlaying = false;
             Application.Quit();
         } else if(code == 11) {
             // I - Inventory
