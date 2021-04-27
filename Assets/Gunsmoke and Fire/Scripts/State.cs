@@ -6,6 +6,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "State")]
 public class State : ScriptableObject {
 
+    [SerializeField] string stateName;
+
     [SerializeField] bool basic = false;
     [SerializeField] bool initializePlayer = false;
     [TextArea(10, 14)] [SerializeField] string storyText;
@@ -19,6 +21,10 @@ public class State : ScriptableObject {
     [TextArea(10, 14)] [SerializeField] string initialSettings;
 
     [SerializeField] AudioSource audio;
+
+    public string getStateName() {
+        return stateName;
+    }
 
     public AudioSource getAudio() {
         return audio;

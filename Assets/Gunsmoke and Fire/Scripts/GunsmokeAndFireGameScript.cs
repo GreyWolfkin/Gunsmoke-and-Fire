@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,11 +22,12 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Add ability to remove inventory items
      *      Add plot point of missing spells? Have only limited spells at the beginning, add more?
      *      Add Save/Load functionality
+     *      Finish Options screens
      */
 
     /*
      * BUGS
-     *          
+     *      After saving, previous state text appears all at once instead of fading in
      */
 
     /*
@@ -47,7 +50,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     [SerializeField] Text overlayStoryField;
     [SerializeField] Text overlayOptionsField;
 
-    [SerializeField] Player p;
+    Player p;
 
     // currentState stores temporary values that can modify Player.currentState
     State currentState;
@@ -75,6 +78,10 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     // inventoryState and journalState need to be created within Start so that currentState can be set to these for navigation and read purposes
     State inventoryState;
     State journalState;
+    State optionsState;
+    State saveState;
+    State quitState;
+    State newGameState;
 
     // What "page" of inventory or journal the user is looking at. Resets to 0 when leaving the inventory or journal state
     int page = 0;
@@ -94,10 +101,17 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         // Create instance of State for inventoryState and journalState
         inventoryState = ScriptableObject.CreateInstance<State>();
         journalState = ScriptableObject.CreateInstance<State>();
+        optionsState = ScriptableObject.CreateInstance<State>();
+        saveState = ScriptableObject.CreateInstance<State>();
+        quitState = ScriptableObject.CreateInstance<State>();
+        newGameState = ScriptableObject.CreateInstance<State>();
 
-        codes = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "q", "i", "j" };
+        codes = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "q", "i", "j", "o" };
 
         currentState = startingState;
+
+        // p = ScriptableObject.CreateInstance<Player>();
+        p = ScriptableObject.CreateInstance<Player>();
 
         // If starting state is set to a different state for debugging purposes, or if loading a saved game, if the starting state does not have the initializesPlayer bool, do not reinitialize player variables
         if(currentState.initializesPlayer()) {
@@ -107,12 +121,14 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         manageState();
     }
 
+
     // Update is called once per frame
     void Update() {
         // listen is used to abstract input handling and clean up Update method
         // A clean Update method makes it easier to add additional code in the future, if necessary
         listen();
     }
+
 
     // textFadeHandler fades old text out and new text in for scene transitions
     // Chapter heading does not fade in/out, because I'm not sure how CrossFadeAlpha will work with TextMeshProUGUI
@@ -146,10 +162,58 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         overlayOptionsField.CrossFadeAlpha(0, 0.0f, false);
     }
 
+
     // listen abstracts input handling out of Update
     private void listen() {
-
-        if(!previousStateWasBasic) {
+        if(currentState == optionsState) {
+            if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
+                returnState();
+                return;
+            } else if(Input.GetKeyDown(KeyCode.S)) {
+                currentState = saveState;
+                ConfirmSave();
+                return;
+            } else if(Input.GetKeyDown(KeyCode.Q)) {
+                currentState = quitState;
+                ConfirmQuit();
+                return;
+            } else if(Input.GetKeyDown(KeyCode.N)) {
+                currentState = newGameState;
+                ConfirmNew();
+                return;
+            } else {
+                return;
+            }
+        } else if(currentState == saveState) {
+            if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
+                SaveGame();
+                return;
+            } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
+                returnState();
+                return;
+            } else {
+                return;
+            }
+        } else if(currentState == quitState) {
+            if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
+                // UnityEditor.EditorApplication.isPlaying = false;
+                Application.Quit();
+            } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
+                returnState();
+                return;
+            } else {
+                return;
+            }
+        } else if(currentState == newGameState) {
+            if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
+                Start();
+            } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
+                returnState();
+                return;
+            } else {
+                return;
+            }
+        } else if(!previousStateWasBasic) {
             if(
                 (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) &&
                 currentStateHasContinueOption()
@@ -170,7 +234,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
         }
 
-        string input = Input.inputString;
+        string input = Input.inputString.ToLower();
         if(input.Length == 0) {
             return;
         }
@@ -181,6 +245,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         }
         return;
     }
+
 
     private void manageKeystroke(int code) {
         if(code == 10) {
@@ -197,11 +262,16 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             currentState = journalState;
             previousStateWasBasic = true;
             readJournal();
+        } else if(code == 13) {
+            currentState = optionsState;
+            previousStateWasBasic = true;
+            readOptions();
         } else {
             // 1 thru 0
             changeState(code);
         }
     }
+
 
     private void manageBasicKeystroke(int code) {
         if(
@@ -210,9 +280,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         ) {
             if(code == 0) {
                 page = 0;
-                currentState = p.getCurrentState();
-                manageState();
-                previousStateWasBasic = false;
+                returnState();
             }
         } else {
             if(code == 0) {
@@ -224,12 +292,18 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
                 }
             } else if(code == 1) {
                 page = 0;
-                currentState = p.getCurrentState();
-                manageState();
-                previousStateWasBasic = false;
+                returnState();
             }
         }
     }
+
+
+    private void returnState() {
+        currentState = p.getCurrentState();
+        manageState();
+        previousStateWasBasic = false;
+    }
+
 
     private void changeState(int opt) {
         for(int i = 0; i < availableStates.Count; i++) {
@@ -241,6 +315,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             }
         }
     }
+
 
     private void manageState() {
         if(currentState.hasChapterTitle()) {
@@ -265,6 +340,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         playSoundEffects();
     }
 
+
     private void setAvailableStates() {
         availableStates.Clear();
         childStates = currentState.getChildStates();
@@ -278,6 +354,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             availableStates.Add(p.getCurrentState());
         }
     }
+
 
     private void readInventory() {
         List<string> inventoryEntries = p.getInventoryEntries();
@@ -303,6 +380,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         StartCoroutine(textFadeHandler(inventoryText, optionsText));
     }
 
+
     private void readJournal() {
         List<string> journalEntries = p.getJournalEntries();
         string journalText = "";
@@ -327,6 +405,81 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         StartCoroutine(textFadeHandler(journalText, optionsText));
     }
 
+    private void readOptions() {
+        string display = "";
+        display += "OPTIONS\n----------\n";
+        display += "RETURN - Return to the game.\n";
+        display += "SAVE - Save your game.\n";
+        display += "QUIT - Quit the game. All unsaved progress will be lost.\n";
+        display += "NEW - Start a new game.";
+
+        string options = "";
+        options += "ENTER - RETURN\n";
+        options += "S - SAVE\n";
+        options += "Q - QUIT\n";
+        options += "N - NEW";
+
+        StartCoroutine(textFadeHandler(display, options));
+    }
+
+
+    private Save CreateSaveGameObject() {
+        Save save = new Save();
+        save.player = new SerializablePlayer(p);
+        return save;
+    }
+
+
+    public void SaveGame() {
+        Save save = CreateSaveGameObject();
+
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(Application.persistentDataPath + "/savegame.gsaf");
+        Debug.Log(Application.persistentDataPath);
+        bf.Serialize(file, save);
+        file.Close();
+
+        StartCoroutine(displayGameSaved());
+    }
+
+
+    IEnumerator displayGameSaved() {
+        overlayStoryField.text = "GAME SAVED";
+        storyField.CrossFadeAlpha(0, 0.2f, false);
+        overlayStoryField.CrossFadeAlpha(1, 0.2f, false);
+
+        optionsField.CrossFadeAlpha(0, 0.2f, false);
+
+        yield return new WaitForSeconds(1);
+
+        returnState();
+    }
+
+
+    private void ConfirmSave() {
+        string display = "Are you sure you wish to save?\nThis will overwrite your existing save file.";
+        string options = "1 - YES\n2 - NO";
+
+        StartCoroutine(textFadeHandler(display, options));
+    }
+
+
+    private void ConfirmQuit() {
+        string display = "Are you sure you wish to quit?";
+        string options = "1 - YES\n2 - NO";
+
+        StartCoroutine(textFadeHandler(display, options));
+    }
+
+
+    private void ConfirmNew() {
+        string display = "Are you sure you wish to start a new game?";
+        string options = "1 - YES\n2 - NO";
+
+        StartCoroutine(textFadeHandler(display, options));
+    }
+
+
     private void playSoundEffects() {
         foreach(AudioSource audio in soundEffectFiles) {
             audio.Stop();
@@ -337,6 +490,8 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             }
         }
     }
+
+
     private int getIndex(string code) {
         for(int i = 0; i < codes.Length; i++) {
             if(code == codes[i]) {
@@ -346,6 +501,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         return -1;
     }
 
+
     private bool currentStateHasContinueOption() {
         if(availableStates[0].getOptText().Equals("(Continue)") || availableStates[0].getOptText().Equals("(Press Enter to Continue)")) {
             return true;
@@ -353,6 +509,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             return false;
         }
     }
+
 
     private bool hasAdditionalPages(string screenType) {
         List<string> entries = new List<string>();

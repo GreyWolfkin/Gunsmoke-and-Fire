@@ -652,7 +652,6 @@ MonoBehaviour:
   chapterField: {fileID: 182857463}
   overlayStoryField: {fileID: 59229909}
   overlayOptionsField: {fileID: 1303405575}
-  p: {fileID: 11400000, guid: 114cde7f98b9a9b4eaa49d601cb1f56e, type: 2}
   startingState: {fileID: 11400000, guid: 7c9d4c6f19bb6b8429ff0da6f58c3566, type: 2}
   soundEffectFiles:
   - {fileID: 1454757702}

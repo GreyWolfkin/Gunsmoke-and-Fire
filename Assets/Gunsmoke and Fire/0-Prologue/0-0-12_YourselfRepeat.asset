@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
   m_Name: 0-0-12_YourselfRepeat
   m_EditorClassIdentifier: 
+  name: 0-0-12
   basic: 0
   initializePlayer: 0
   storyText: You've already looked yourself over. Someone tried to bump you off,

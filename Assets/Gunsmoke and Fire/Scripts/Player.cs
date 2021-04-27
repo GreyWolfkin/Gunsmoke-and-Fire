@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Player")]
 public class Player : ScriptableObject {
 
     State currentState;
@@ -12,10 +11,22 @@ public class Player : ScriptableObject {
     List<string> flags = new List<string>();
     List<string> items = new List<string>();
 
-    List<string> deductions;
+    List<string> deductions = new List<string>();
 
     List<string> journalEntries = new List<string>();
     List<string> inventoryEntries = new List<string>();
+
+    public void deserialize(SerializablePlayer sp) {
+        varNames = sp.getVarNames();
+        varVals = sp.getVarVals();
+        flags = sp.getFlags();
+        items = sp.getItems();
+
+        deductions = sp.getDeductions();
+
+        journalEntries = sp.getJournalEntries();
+        inventoryEntries = sp.getInventoryEntries();
+    }
 
     public State getCurrentState() {
         return currentState;
