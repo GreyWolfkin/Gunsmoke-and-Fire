@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
   m_Name: 0-0-0_WhatHappened
   m_EditorClassIdentifier: 
-  name: 0-0-0
+  stateName: 
   basic: 0
   initializePlayer: 1
   storyText: 'It''s 2 a.m., according to your watch. You lay your head back down
@@ -20,7 +20,7 @@ MonoBehaviour:
 
     No.'
   optText: 
-  chapterTitle: Prologue - What Happened?
+  chapterTitle: Prologue
   locked: 0
   childStates:
   - {fileID: 11400000, guid: 7a23ef6e0f5a7f84ca3470316191c9c7, type: 2}

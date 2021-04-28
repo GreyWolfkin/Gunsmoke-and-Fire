@@ -12,20 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
   m_Name: 0-0-1_WhatHappenedCont
   m_EditorClassIdentifier: 
-  name: 0-0-1
+  stateName: 
   basic: 0
   initializePlayer: 0
   storyText: 'The smell of gunsmoke brings you to your feet.
 
-    Not a drunken night.
-    A shoot-out. But with who? And why?
 
-    You look around the destroyed office.
-    Whoever you scuffled with, you two really went gashouse.
+    Not a drunken
+    night. A shoot-out. But with who? And why?
 
-    The side of your
-    head feels warm. You put a hand to your hair and it comes away sticky. Blood.
-    A lot of it. Someone slugged you good, but they didn''t finish the job.'
+
+    You look around the destroyed
+    office. Whoever you scuffled with, you two really went gashouse.
+
+
+    The side
+    of your head feels warm. You put a hand to your hair and it comes away sticky.
+    Blood. A lot of it. Someone slugged you good, but they didn''t finish the job.'
   optText: (Press Enter to Continue)
   chapterTitle: 
   locked: 0

@@ -22,7 +22,27 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Add ability to remove inventory items
      *      Add plot point of missing spells? Have only limited spells at the beginning, add more?
      *      Add Save/Load functionality
+     *          Change Player.CurrentState to the name of the current state as string, rather than a State object so that Player can be Serialized for save/load purposes
+     *          Create an Array of States
+     *              Iterate over States and ChildStates, adding to a List, ignoring a ChildState if it already exists in the List
+     *                  This will take a long time to load, but should be fast to iterate over once the game has started
+     *                  Then turn the List into an Array
+     *              Create an Array of State.Name
+     *                  Change variables to C# standard? Less encapsulation? Consider it for the future
+     *              Create an Array of State.Name, iterate over THAT Array every time you call Player.GetCurrentState, then use the index of that name to pull the State from the State Array.
      *      Finish Options screens
+     *      Fix naming convention on methods (even though I don't want to)
+     *      
+     *      
+     *      
+     *      Abstract some code from Listener back to Update
+     *          Why? Listener is now too big. It's trying to account for multiple possibilities. If in Options, then hitting enter does this. Else if in Journal, then hitting enter does this. Else if else if else if
+     *          If we put most of the if-else logic back into update, it could call the correct listen method. Clean them up a lot.
+     *          And really, that shouldn't affect speed at all. If anything, it should speed things up. Right now Update just calls Listen, and Listen goes through a hundred if-else statements
+     *          Whereas if we abstracted (funny to think of abstracting backwards like this. It's actually UNabstracting) some of the logic back to update, then it could call OptionListener or SaveListener or whatever. Then the keystroke handling could happen there
+     *          I suppose it may not actually speed things up, because right now it's not worrying about the logic INSIDE the if-else statements, unless that if is true. So it may not speed things up, but it'll be a lot cleaner and easier to look at.
+     *          
+     *      And the objective will be to clean up Listener, and maybe that will provide a hint as to how to handle combat/puzzle-solving mechanics.
      */
 
     /*

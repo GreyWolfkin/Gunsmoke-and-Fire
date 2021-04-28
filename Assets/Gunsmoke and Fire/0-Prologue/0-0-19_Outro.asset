@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
   m_Name: 0-0-19_Outro
   m_EditorClassIdentifier: 
-  name: 0-0-19
+  stateName: 
   basic: 0
   initializePlayer: 0
   storyText: You step out of your office into the chilly night air. You light a cigarette

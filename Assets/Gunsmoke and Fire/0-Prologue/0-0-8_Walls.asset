@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
   m_Name: 0-0-8_Walls
   m_EditorClassIdentifier: 
-  name: 0-0-8
+  stateName: 
   basic: 0
   initializePlayer: 0
-  storyText: You inspect the walls. Bullet holes, but also scorch marks and the telltale
-    smell of fire magic. Marks on the far side of the office, you probably made those.
-    But there are also marks on your side of the room. So whoever you tussled with,
-    you weren't the only one throwing spells around.
+  storyText: 'You inspect the walls. Bullet holes, but also scorch marks and the
+    telltale smell of fire magic.
+
+
+    Marks on the far side of the office, you
+    probably made those. But there are also marks on your side of the room. So whoever
+    you tussled with, you weren''t the only one throwing spells around.'
   optText: Examine the walls
   chapterTitle: 
   locked: 0
