@@ -21,33 +21,14 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Add ability to remove journal entries
      *      Add ability to remove inventory items
      *      Add plot point of missing spells? Have only limited spells at the beginning, add more?
-     *      Add Save/Load functionality
-     *          Change Player.CurrentState to the name of the current state as string, rather than a State object so that Player can be Serialized for save/load purposes
-     *          Create an Array of States
-     *              Iterate over States and ChildStates, adding to a List, ignoring a ChildState if it already exists in the List
-     *                  This will take a long time to load, but should be fast to iterate over once the game has started
-     *                  Then turn the List into an Array
-     *              Create an Array of State.Name
-     *                  Change variables to C# standard? Less encapsulation? Consider it for the future
-     *              Create an Array of State.Name, iterate over THAT Array every time you call Player.GetCurrentState, then use the index of that name to pull the State from the State Array.
-     *      Finish Options screens
      *      Fix naming convention on methods (even though I don't want to)
-     *      
-     *      
-     *      
-     *      Abstract some code from Listener back to Update
-     *          Why? Listener is now too big. It's trying to account for multiple possibilities. If in Options, then hitting enter does this. Else if in Journal, then hitting enter does this. Else if else if else if
-     *          If we put most of the if-else logic back into update, it could call the correct listen method. Clean them up a lot.
-     *          And really, that shouldn't affect speed at all. If anything, it should speed things up. Right now Update just calls Listen, and Listen goes through a hundred if-else statements
-     *          Whereas if we abstracted (funny to think of abstracting backwards like this. It's actually UNabstracting) some of the logic back to update, then it could call OptionListener or SaveListener or whatever. Then the keystroke handling could happen there
-     *          I suppose it may not actually speed things up, because right now it's not worrying about the logic INSIDE the if-else statements, unless that if is true. So it may not speed things up, but it'll be a lot cleaner and easier to look at.
-     *          
-     *      And the objective will be to clean up Listener, and maybe that will provide a hint as to how to handle combat/puzzle-solving mechanics.
+     *      Figure out a way to load only scenes for each chapter at a time?
+     *      Cleanup Start method, abstract to new methods
      */
 
     /*
      * BUGS
-     *      After saving, previous state text appears all at once instead of fading in
+     *      
      */
 
     /*
@@ -57,7 +38,22 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Standardize use of "inventory" vs "inv"
      *      Clean up "Continue" option checks
      *      Clean up blurry text
-     *      Pick a better text font
+     *      Pick a better text fontAdd Save/Load functionality
+     *      Change Player.CurrentState to the name of the current state as string, rather than a State object so that Player can be Serialized for save/load purposes
+     *      Create an Array of States
+     *          Iterate over States and ChildStates, adding to a List, ignoring a ChildState if it already exists in the List
+     *              This will take a long time to load, but should be fast to iterate over once the game has started
+     *              Then turn the List into an Array
+     *          Create an Array of State.Name
+     *              Change variables to C# standard? Less encapsulation? Consider it for the future
+     *          Create an Array of State.Name, iterate over THAT Array every time you call Player.GetCurrentState, then use the index of that name to pull the State from the State Array.
+     *      Finish Options screens
+     *      Abstract some code from Listener back to Update
+     *          Why? Listener is now too big. It's trying to account for multiple possibilities. If in Options, then hitting enter does this. Else if in Journal, then hitting enter does this. Else if else if else if
+     *          If we put most of the if-else logic back into update, it could call the correct listen method. Clean them up a lot.
+     *          And really, that shouldn't affect speed at all. If anything, it should speed things up. Right now Update just calls Listen, and Listen goes through a hundred if-else statements
+     *          Whereas if we abstracted (funny to think of abstracting backwards like this. It's actually UNabstracting) some of the logic back to update, then it could call OptionListener or SaveListener or whatever. Then the keystroke handling could happen there
+     *          I suppose it may not actually speed things up, because right now it's not worrying about the logic INSIDE the if-else statements, unless that if is true. So it may not speed things up, but it'll be a lot cleaner and easier to look at.
      */
 
     // Text Fields for displaying story text and options text.
@@ -71,6 +67,9 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     [SerializeField] Text overlayOptionsField;
 
     Player p;
+    List<State> statesList;
+    State[] states;
+    string[] stateNames;
 
     // currentState stores temporary values that can modify Player.currentState
     State currentState;
@@ -100,6 +99,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     State journalState;
     State optionsState;
     State saveState;
+    State loadState;
     State quitState;
     State newGameState;
 
@@ -109,6 +109,16 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+
+        statesList = new List<State>();
+
+        AddChildStatesToStatesList(startingState);
+        states = statesList.ToArray();
+        stateNames = new string[states.Length];
+
+        for(int i = 0; i < states.Length; i++) {
+            stateNames[i] = states[i].getStateName();
+        }
 
         // Set Alpha to 0 for overlayStoryField and overlayOptionsField
         overlayStoryField.CrossFadeAlpha(0, 0.0f, false);
@@ -123,6 +133,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         journalState = ScriptableObject.CreateInstance<State>();
         optionsState = ScriptableObject.CreateInstance<State>();
         saveState = ScriptableObject.CreateInstance<State>();
+        loadState = ScriptableObject.CreateInstance<State>();
         quitState = ScriptableObject.CreateInstance<State>();
         newGameState = ScriptableObject.CreateInstance<State>();
 
@@ -131,109 +142,50 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         currentState = startingState;
 
         // p = ScriptableObject.CreateInstance<Player>();
-        p = ScriptableObject.CreateInstance<Player>();
+        p = new Player();
 
         // If starting state is set to a different state for debugging purposes, or if loading a saved game, if the starting state does not have the initializesPlayer bool, do not reinitialize player variables
         if(currentState.initializesPlayer()) {
             currentState.initPlayer(p);
         }
-        p.setCurrentState(currentState);
+        p.setCurrentState(currentState.getStateName());
         manageState();
+    }
+
+    void AddChildStatesToStatesList(State state) {
+
+        if(!statesList.Contains(state)) {
+            statesList.Add(state);
+            foreach(State childState in state.getChildStates()) {
+                AddChildStatesToStatesList(childState);
+            }
+        } else {
+            return;
+        }
     }
 
 
     // Update is called once per frame
     void Update() {
-        // listen is used to abstract input handling and clean up Update method
-        // A clean Update method makes it easier to add additional code in the future, if necessary
-        listen();
-    }
-
-
-    // textFadeHandler fades old text out and new text in for scene transitions
-    // Chapter heading does not fade in/out, because I'm not sure how CrossFadeAlpha will work with TextMeshProUGUI
-    IEnumerator textFadeHandler(string storyText, string optionsText) {
-        // Sets overlayStoryField to the new story text, then cross-fades the old text with the overlay
-        overlayStoryField.text = storyText;
-        storyField.CrossFadeAlpha(0, 0.2f, false);
-        overlayStoryField.CrossFadeAlpha(1, 0.2f, false);
-
-        // If the new options text is different than the old options text, do a cross-fade
-        // Otherwise, do not cross-fade
-        // This prevents the annoying "fade-in-fade-out" effect if the options text does not change
-        //      e.g. when both options are "(Continue)"
-        if(optionsText != optionsField.text) {
-            overlayOptionsField.text = optionsText;
-            optionsField.CrossFadeAlpha(0, 0.2f, false);
-            overlayOptionsField.CrossFadeAlpha(1, 0.2f, false);
+        if(currentState == optionsState) {
+            optionsListener();
+        } else if(currentState == saveState) {
+            saveGameListener();
+        } else if(currentState == loadState) {
+            loadGameListener();
+        } else if(currentState == quitState) {
+            quitGameListener();
+        } else if(currentState == newGameState) {
+            newGameListener();
+        } else {
+            genericListener();
         }
-
-        // <yeild return new WaitForSeconds(seconds)> forces the Coroutine to wait
-        // In this case, wait the length of time necessary for the texts to cross-fade
-        yield return new WaitForSeconds(0.2f);
-
-        // Set the story and options fields to the new values, then fade out the overlay and fade in the default fields instantly
-        // This resets alpha for the fields to the correct values, so that cross-fade can be used again next time the scene transitions
-        storyField.text = storyText;
-        optionsField.text = optionsText;
-        storyField.CrossFadeAlpha(1, 0.0f, false);
-        optionsField.CrossFadeAlpha(1, 0.0f, false);
-        overlayStoryField.CrossFadeAlpha(0, 0.0f, false);
-        overlayOptionsField.CrossFadeAlpha(0, 0.0f, false);
     }
 
 
     // listen abstracts input handling out of Update
-    private void listen() {
-        if(currentState == optionsState) {
-            if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
-                returnState();
-                return;
-            } else if(Input.GetKeyDown(KeyCode.S)) {
-                currentState = saveState;
-                ConfirmSave();
-                return;
-            } else if(Input.GetKeyDown(KeyCode.Q)) {
-                currentState = quitState;
-                ConfirmQuit();
-                return;
-            } else if(Input.GetKeyDown(KeyCode.N)) {
-                currentState = newGameState;
-                ConfirmNew();
-                return;
-            } else {
-                return;
-            }
-        } else if(currentState == saveState) {
-            if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-                SaveGame();
-                return;
-            } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
-                returnState();
-                return;
-            } else {
-                return;
-            }
-        } else if(currentState == quitState) {
-            if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-                // UnityEditor.EditorApplication.isPlaying = false;
-                Application.Quit();
-            } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
-                returnState();
-                return;
-            } else {
-                return;
-            }
-        } else if(currentState == newGameState) {
-            if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-                Start();
-            } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
-                returnState();
-                return;
-            } else {
-                return;
-            }
-        } else if(!previousStateWasBasic) {
+    private void genericListener() {
+        if(!previousStateWasBasic) {
             if(
                 (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) &&
                 currentStateHasContinueOption()
@@ -259,11 +211,90 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             return;
         }
         if(!previousStateWasBasic) {
-            manageKeystroke(getIndex(input));
+            manageKeystroke(getCodeIndex(input));
         } else {
-            manageBasicKeystroke(getIndex(input));
+            manageBasicKeystroke(getCodeIndex(input));
         }
         return;
+    }
+
+    private void optionsListener() {
+        if(Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) {
+            returnState();
+            return;
+        } else if(Input.GetKeyDown(KeyCode.S)) {
+            currentState = saveState;
+            ConfirmSave();
+            return;
+        } else if(Input.GetKeyDown(KeyCode.L)) {
+            currentState = loadState;
+            ConfirmLoad();
+            return;
+        } else if(Input.GetKeyDown(KeyCode.Q)) {
+            currentState = quitState;
+            ConfirmQuit();
+            return;
+        } else if(Input.GetKeyDown(KeyCode.N)) {
+            currentState = newGameState;
+            ConfirmNew();
+            return;
+        } else {
+            return;
+        }
+    }
+
+    private void saveGameListener() {
+        if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
+            SaveGame();
+            return;
+        } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
+            returnState();
+            return;
+        } else {
+            return;
+        }
+    }
+
+    private void loadGameListener() {
+        if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
+            LoadGame();
+            return;
+        } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
+            returnState();
+            return;
+        } else {
+            return;
+        }
+    }
+
+    private void quitGameListener() {
+        if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
+            // UnityEditor.EditorApplication.isPlaying = false;
+            Application.Quit();
+        } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
+            returnState();
+            return;
+        } else {
+            return;
+        }
+    }
+
+    private void newGameListener() {
+        if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
+            currentState = startingState;
+            p = new Player();
+            if(currentState.initializesPlayer()) {
+                currentState.initPlayer(p);
+            }
+            p.setCurrentState(currentState.getStateName());
+            manageState();
+            returnState();
+        } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
+            returnState();
+            return;
+        } else {
+            return;
+        }
     }
 
 
@@ -317,9 +348,51 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         }
     }
 
+    // textFadeHandler fades old text out and new text in for scene transitions
+    // Chapter heading does not fade in/out, because I'm not sure how CrossFadeAlpha will work with TextMeshProUGUI
+    IEnumerator textFadeHandler(string storyText, string optionsText) {
+        // Sets overlayStoryField to the new story text, then cross-fades the old text with the overlay
+        overlayStoryField.text = storyText;
+        storyField.CrossFadeAlpha(0, 0.2f, false);
+        overlayStoryField.CrossFadeAlpha(1, 0.2f, false);
+
+        // If the new options text is different than the old options text, do a cross-fade
+        // Otherwise, do not cross-fade
+        // This prevents the annoying "fade-in-fade-out" effect if the options text does not change
+        //      e.g. when both options are "(Continue)"
+        if(optionsText != optionsField.text) {
+            overlayOptionsField.text = optionsText;
+            optionsField.CrossFadeAlpha(0, 0.2f, false);
+            overlayOptionsField.CrossFadeAlpha(1, 0.2f, false);
+        }
+
+        // <yeild return new WaitForSeconds(seconds)> forces the Coroutine to wait
+        // In this case, wait the length of time necessary for the texts to cross-fade
+        yield return new WaitForSeconds(0.2f);
+
+        // Set the story and options fields to the new values, then fade out the overlay and fade in the default fields instantly
+        // This resets alpha for the fields to the correct values, so that cross-fade can be used again next time the scene transitions
+        storyField.text = storyText;
+        optionsField.text = optionsText;
+        storyField.CrossFadeAlpha(1, 0.0f, false);
+        optionsField.CrossFadeAlpha(1, 0.0f, false);
+        overlayStoryField.CrossFadeAlpha(0, 0.0f, false);
+        overlayOptionsField.CrossFadeAlpha(0, 0.0f, false);
+    }
+
+    State getPlayerState() {
+        foreach(State state in states) {
+            if(p.getCurrentState().Equals(state.getStateName())) {
+                return state;
+            }
+        }
+
+        Debug.Log("Cannot find Player.CurrentState\n" + p.getCurrentState());
+        return null;
+    }
 
     private void returnState() {
-        currentState = p.getCurrentState();
+        currentState = getPlayerState();
         manageState();
         previousStateWasBasic = false;
     }
@@ -329,7 +402,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         for(int i = 0; i < availableStates.Count; i++) {
             if(opt == i) {
                 currentState = availableStates[opt];
-                p.setCurrentState(currentState);
+                p.setCurrentState(currentState.getStateName());
                 previousStateWasBasic = false;
                 manageState();
             }
@@ -347,14 +420,15 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         setAvailableStates();
         string optionsText = "";
         if(availableStates.Count == 0) {
-            optionsText = "Q - Quit";
+            optionsText = "O - Options";
         } else if(!currentStateHasContinueOption()) { 
             for(int i = 0; i < availableStates.Count; i++) {
                 optionsText += (i + 1) + " - " + availableStates[i].getOptText() + "\n";
             }
-            optionsText += "I - Inventory\nJ - Journal\nQ - Quit";
+            optionsText += "I - Inventory\nJ - Journal\nO - Options";
         } else {
             optionsText += availableStates[0].getOptText();
+            optionsText += "\n\nO - Options";
         }
         StartCoroutine(textFadeHandler(currentState.getStoryText(p), optionsText));
         playSoundEffects();
@@ -371,7 +445,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             }
         }
         if(currentState.isBasic()) {
-            availableStates.Add(p.getCurrentState());
+            availableStates.Add(getPlayerState());
         }
     }
 
@@ -430,12 +504,14 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         display += "OPTIONS\n----------\n";
         display += "RETURN - Return to the game.\n";
         display += "SAVE - Save your game.\n";
+        display += "LOAD - Load a saved game.\n";
         display += "QUIT - Quit the game. All unsaved progress will be lost.\n";
         display += "NEW - Start a new game.";
 
         string options = "";
         options += "ENTER - RETURN\n";
         options += "S - SAVE\n";
+        options += "L - LOAD\n";
         options += "Q - QUIT\n";
         options += "N - NEW";
 
@@ -445,26 +521,63 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     private Save CreateSaveGameObject() {
         Save save = new Save();
-        save.player = new SerializablePlayer(p);
+        save.setPlayer(p);
         return save;
     }
 
 
     public void SaveGame() {
+        if(!Directory.Exists(Directory.GetCurrentDirectory() + "\\savedata")) {
+            Directory.CreateDirectory(Directory.GetCurrentDirectory() + "\\savedata");
+        }
+
         Save save = CreateSaveGameObject();
 
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + "/savegame.gsaf");
-        Debug.Log(Application.persistentDataPath);
+        FileStream file = File.Create(Directory.GetCurrentDirectory() + "\\savedata\\savegame.gsaf");
         bf.Serialize(file, save);
         file.Close();
 
         StartCoroutine(displayGameSaved());
     }
 
+    public void LoadGame() {
+        if(File.Exists(Directory.GetCurrentDirectory() + "\\savedata\\savegame.gsaf")) {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Directory.GetCurrentDirectory() + "\\savedata\\savegame.gsaf", FileMode.Open);
+            Save save = (Save) bf.Deserialize(file);
+            file.Close();
+
+            p = save.getPlayer();
+            currentState = getPlayerState();
+            manageState();
+            returnState();
+        } else {
+            StartCoroutine(displayLoadError());
+        }
+    }
+
 
     IEnumerator displayGameSaved() {
         overlayStoryField.text = "GAME SAVED";
+        storyField.CrossFadeAlpha(0, 0.2f, false);
+        overlayStoryField.CrossFadeAlpha(1, 0.2f, false);
+
+        optionsField.CrossFadeAlpha(0, 0.2f, false);
+
+        yield return new WaitForSeconds(0.2f);
+
+        storyField.text = overlayStoryField.text;
+        storyField.CrossFadeAlpha(1, 0, false);
+        overlayStoryField.CrossFadeAlpha(0, 0, false);
+
+        yield return new WaitForSeconds(0.8f);
+
+        returnState();
+    }
+
+    IEnumerator displayLoadError() {
+        overlayStoryField.text = "COULD NOT LOAD SAVED GAME";
         storyField.CrossFadeAlpha(0, 0.2f, false);
         overlayStoryField.CrossFadeAlpha(1, 0.2f, false);
 
@@ -478,6 +591,13 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     private void ConfirmSave() {
         string display = "Are you sure you wish to save?\nThis will overwrite your existing save file.";
+        string options = "1 - YES\n2 - NO";
+
+        StartCoroutine(textFadeHandler(display, options));
+    }
+
+    private void ConfirmLoad() {
+        string display = "Are you sure you wish to load a saved game?\nAll progress since your last save will be lost.";
         string options = "1 - YES\n2 - NO";
 
         StartCoroutine(textFadeHandler(display, options));
@@ -512,7 +632,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     }
 
 
-    private int getIndex(string code) {
+    private int getCodeIndex(string code) {
         for(int i = 0; i < codes.Length; i++) {
             if(code == codes[i]) {
                 return i;

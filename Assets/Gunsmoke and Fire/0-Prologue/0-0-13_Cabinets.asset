@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
   m_Name: 0-0-13_Cabinets
   m_EditorClassIdentifier: 
-  name: 0-0-13
+  stateName: 0-0-13
   basic: 0
   initializePlayer: 0
   storyText: You check out your filing cabinets. They've been opened, and evidence

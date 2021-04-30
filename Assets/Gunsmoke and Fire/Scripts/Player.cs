@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : ScriptableObject {
+[System.Serializable]
+public class Player {
 
-    State currentState;
+    string currentState;
 
     List<string> varNames = new List<string>();
     List<int> varVals = new List<int>();
@@ -16,22 +17,10 @@ public class Player : ScriptableObject {
     List<string> journalEntries = new List<string>();
     List<string> inventoryEntries = new List<string>();
 
-    public void deserialize(SerializablePlayer sp) {
-        varNames = sp.getVarNames();
-        varVals = sp.getVarVals();
-        flags = sp.getFlags();
-        items = sp.getItems();
-
-        deductions = sp.getDeductions();
-
-        journalEntries = sp.getJournalEntries();
-        inventoryEntries = sp.getInventoryEntries();
-    }
-
-    public State getCurrentState() {
+    public string getCurrentState() {
         return currentState;
     }
-    public void setCurrentState(State set) {
+    public void setCurrentState(string set) {
         currentState = set;
     }
 

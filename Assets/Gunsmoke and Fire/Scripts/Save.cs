@@ -5,5 +5,14 @@ using UnityEngine;
 [System.Serializable]
 public class Save
 {
-    public SerializablePlayer player;
+    private Player player;
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player set) {
+        player = set;
+    }
+
 }

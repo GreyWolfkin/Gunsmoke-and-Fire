@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
   m_Name: 0-0-0_WhatHappened
   m_EditorClassIdentifier: 
-  stateName: 
+  stateName: 0-0-0
   basic: 0
   initializePlayer: 1
   storyText: 'It''s 2 a.m., according to your watch. You lay your head back down
