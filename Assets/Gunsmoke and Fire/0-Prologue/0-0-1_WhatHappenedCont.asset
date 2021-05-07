@@ -37,4 +37,4 @@ MonoBehaviour:
   parameters: 
   setFunctions: 
   initialSettings: 
-  audio: {fileID: 0}
+  audioClip: {fileID: 0}

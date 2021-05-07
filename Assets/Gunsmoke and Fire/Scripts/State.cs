@@ -20,14 +20,10 @@ public class State : ScriptableObject {
     [TextArea(10, 14)] [SerializeField] string setFunctions;
     [TextArea(10, 14)] [SerializeField] string initialSettings;
 
-    [SerializeField] AudioSource audio;
+    [SerializeField] AudioClip audioClip;
 
     public string getStateName() {
         return stateName;
-    }
-
-    public AudioSource getAudio() {
-        return audio;
     }
 
     public bool isBasic() {
@@ -72,6 +68,10 @@ public class State : ScriptableObject {
 
     public State[] getChildStates() {
         return childStates;
+    }
+
+    public AudioClip getAudioClip() {
+        return audioClip;
     }
 
     public bool isAvailable(Player p) {
@@ -241,7 +241,7 @@ public class State : ScriptableObject {
         List<string> flags = new List<string>();
         List<string> items = new List<string>();
 
-        Boolean clear = false;
+        bool clear = false;
 
         string[] settings = initialSettings.Split('|');
         string[] set = new string[3];

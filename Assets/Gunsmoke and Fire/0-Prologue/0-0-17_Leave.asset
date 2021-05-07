@@ -30,4 +30,4 @@ MonoBehaviour:
   parameters: clues_found%VAR_REQ%==%4
   setFunctions: 
   initialSettings: 
-  audio: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: 4bd4772e462bcdf44a50fd37fb3d8ba1, type: 3}

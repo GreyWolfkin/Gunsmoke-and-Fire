@@ -32,4 +32,4 @@ MonoBehaviour:
   parameters: 
   setFunctions: bottle_of_bourbon%ITEM_SET
   initialSettings: 
-  audio: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: ab453291c39d8e6499d51d813f3a63f9, type: 3}

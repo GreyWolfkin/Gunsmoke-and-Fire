@@ -386,7 +386,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1889739788}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &136457525
 AudioSource:
@@ -653,14 +653,8 @@ MonoBehaviour:
   overlayStoryField: {fileID: 59229909}
   overlayOptionsField: {fileID: 1303405575}
   startingState: {fileID: 11400000, guid: 7c9d4c6f19bb6b8429ff0da6f58c3566, type: 2}
-  soundEffectFiles:
-  - {fileID: 1454757702}
-  - {fileID: 136457525}
-  - {fileID: 1374679794}
-  soundEffectTriggerStates:
-  - {fileID: 11400000, guid: 162eba7aca8cb9a4b907651f6b296465, type: 2}
-  - {fileID: 11400000, guid: 60d261420c4d80442901e0fe190b3bc7, type: 2}
-  - {fileID: 11400000, guid: d0620167c964be846a758ccc981017f3, type: 2}
+  soundEffectFiles: []
+  soundEffectTriggerStates: []
 --- !u!4 &188592247
 Transform:
   m_ObjectHideFlags: 0
@@ -1302,7 +1296,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1889739788}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1374679794
 AudioSource:
@@ -1662,8 +1656,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1454757701}
-  - {fileID: 1374679793}
   - {fileID: 136457524}
+  - {fileID: 1374679793}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

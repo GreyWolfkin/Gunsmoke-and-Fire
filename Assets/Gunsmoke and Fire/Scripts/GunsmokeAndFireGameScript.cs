@@ -10,20 +10,30 @@ using UnityEngine.UI;
 public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     /*
-     * TODO
+     * TODO - CODE
      *      Finish commenting Engine code
      *      Cleanup Player code
      *      Comment Player code
      *      Cleanup State code
      *      Comment state code
-     *      Find a cleaner way to store audio files and state triggers
      *      Build framework for puzzle-solving mechanic
      *      Add ability to remove journal entries
      *      Add ability to remove inventory items
-     *      Add plot point of missing spells? Have only limited spells at the beginning, add more?
      *      Fix naming convention on methods (even though I don't want to)
      *      Figure out a way to load only scenes for each chapter at a time?
      *      Cleanup Start method, abstract to new methods
+     *      Set up tabs in Journal?
+     *          Contacts, Clues, Key Events?
+     *      
+     */
+
+    /*
+     * TODO - STORY
+     *      Add plot point of missing spells? Have only limited spells at the beginning, add more?    
+     *      Get Playtester Opinion: Is repeating narrative text immersion breaking?
+     *          e.g. Harald's Bar. You get the same introduction whether you've been there before or not. Do we need a different state for returning to the place? Or will the user accept repeated text?
+     *      Flashback Chapter - 4 years ago, murder investigation, tutorial on puzzle solving mechanics, interrogation scene, then receive Atellena case
+     * 
      */
 
     /*
@@ -38,22 +48,11 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Standardize use of "inventory" vs "inv"
      *      Clean up "Continue" option checks
      *      Clean up blurry text
-     *      Pick a better text fontAdd Save/Load functionality
-     *      Change Player.CurrentState to the name of the current state as string, rather than a State object so that Player can be Serialized for save/load purposes
-     *      Create an Array of States
-     *          Iterate over States and ChildStates, adding to a List, ignoring a ChildState if it already exists in the List
-     *              This will take a long time to load, but should be fast to iterate over once the game has started
-     *              Then turn the List into an Array
-     *          Create an Array of State.Name
-     *              Change variables to C# standard? Less encapsulation? Consider it for the future
-     *          Create an Array of State.Name, iterate over THAT Array every time you call Player.GetCurrentState, then use the index of that name to pull the State from the State Array.
+     *      Pick a better text font
+     *      Add Save/Load functionality
      *      Finish Options screens
      *      Abstract some code from Listener back to Update
-     *          Why? Listener is now too big. It's trying to account for multiple possibilities. If in Options, then hitting enter does this. Else if in Journal, then hitting enter does this. Else if else if else if
-     *          If we put most of the if-else logic back into update, it could call the correct listen method. Clean them up a lot.
-     *          And really, that shouldn't affect speed at all. If anything, it should speed things up. Right now Update just calls Listen, and Listen goes through a hundred if-else statements
-     *          Whereas if we abstracted (funny to think of abstracting backwards like this. It's actually UNabstracting) some of the logic back to update, then it could call OptionListener or SaveListener or whatever. Then the keystroke handling could happen there
-     *          I suppose it may not actually speed things up, because right now it's not worrying about the logic INSIDE the if-else statements, unless that if is true. So it may not speed things up, but it'll be a lot cleaner and easier to look at.
+     *      Find a cleaner way to store audio files and state triggers
      */
 
     // Text Fields for displaying story text and options text.
@@ -81,12 +80,6 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     State[] childStates;
     List<State> availableStates = new List<State>();
 
-    // These AudioSource lists only exist until a better solution can be found
-    // Ideally I'd like to assign AudioSource components to the State, but I can't figure out how to do that
-    // So right now the clunky solution is the one we've got
-    [SerializeField] List<AudioSource> soundEffectFiles;
-    [SerializeField] List<State> soundEffectTriggerStates;
-
     // Populated with accepted input values. Uses index of input value for navigation
     string[] codes;
 
@@ -106,6 +99,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     // What "page" of inventory or journal the user is looking at. Resets to 0 when leaving the inventory or journal state
     int page = 0;
 
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start() {
@@ -137,7 +131,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         quitState = ScriptableObject.CreateInstance<State>();
         newGameState = ScriptableObject.CreateInstance<State>();
 
-        codes = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "q", "i", "j", "o" };
+        codes = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "i", "j", "o" };
 
         currentState = startingState;
 
@@ -167,23 +161,21 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+
         if(currentState == optionsState) {
             optionsListener();
-        } else if(currentState == saveState) {
-            saveGameListener();
-        } else if(currentState == loadState) {
-            loadGameListener();
-        } else if(currentState == quitState) {
-            quitGameListener();
-        } else if(currentState == newGameState) {
-            newGameListener();
+        } else if(
+            currentState == saveState ||
+            currentState == loadState ||
+            currentState == quitState ||
+            currentState == newGameState
+        ) {
+            internalOptionsListener();
         } else {
             genericListener();
         }
     }
 
-
-    // listen abstracts input handling out of Update
     private void genericListener() {
         if(!previousStateWasBasic) {
             if(
@@ -243,52 +235,27 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         }
     }
 
-    private void saveGameListener() {
+    private void internalOptionsListener() {
         if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-            SaveGame();
-            return;
-        } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
-            returnState();
-            return;
-        } else {
-            return;
-        }
-    }
-
-    private void loadGameListener() {
-        if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-            LoadGame();
-            return;
-        } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
-            returnState();
-            return;
-        } else {
-            return;
-        }
-    }
-
-    private void quitGameListener() {
-        if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-            // UnityEditor.EditorApplication.isPlaying = false;
-            Application.Quit();
-        } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
-            returnState();
-            return;
-        } else {
-            return;
-        }
-    }
-
-    private void newGameListener() {
-        if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-            currentState = startingState;
-            p = new Player();
-            if(currentState.initializesPlayer()) {
-                currentState.initPlayer(p);
+            if(currentState == saveState) {
+                SaveGame();
+                return;
+            } else if(currentState == loadState) {
+                LoadGame();
+                return;
+            } else if(currentState == quitState) {
+                // UnityEditor.EditorApplication.isPlaying = false;
+                Application.Quit();
+            } else if(currentState == newGameState) {
+                currentState = startingState;
+                p = new Player();
+                if(currentState.initializesPlayer()) {
+                    currentState.initPlayer(p);
+                }
+                p.setCurrentState(currentState.getStateName());
+                manageState();
+                returnState();
             }
-            p.setCurrentState(currentState.getStateName());
-            manageState();
-            returnState();
         } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
             returnState();
             return;
@@ -296,24 +263,19 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             return;
         }
     }
-
 
     private void manageKeystroke(int code) {
         if(code == 10) {
-            // Q - Quit
-            // UnityEditor.EditorApplication.isPlaying = false;
-            Application.Quit();
-        } else if(code == 11) {
             // I - Inventory
             currentState = inventoryState;
             previousStateWasBasic = true;
             readInventory();
-        } else if(code == 12) {
+        } else if(code == 11) {
             // J - Journal
             currentState = journalState;
             previousStateWasBasic = true;
             readJournal();
-        } else if(code == 13) {
+        } else if(code == 12) {
             currentState = optionsState;
             previousStateWasBasic = true;
             readOptions();
@@ -411,6 +373,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
 
     private void manageState() {
+
         if(currentState.hasChapterTitle()) {
             chapterField.text = currentState.getChapterTitle();
         }
@@ -621,13 +584,15 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
 
     private void playSoundEffects() {
-        foreach(AudioSource audio in soundEffectFiles) {
-            audio.Stop();
+
+        if(audioSource != null) {
+            audioSource.Stop();
         }
-        for(int i = 0; i < soundEffectTriggerStates.Count; i++) {
-            if(soundEffectTriggerStates[i] == currentState && !previousStateWasBasic) {
-                soundEffectFiles[i].Play();
-            }
+
+        if(!previousStateWasBasic && currentState.getAudioClip() != null) {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.clip = currentState.getAudioClip();
+            audioSource.Play();
         }
     }
 

@@ -27,4 +27,4 @@ MonoBehaviour:
   parameters: 
   setFunctions: 
   initialSettings: TRUE%CLEAR|clues_found%VAR%0
-  audio: {fileID: 0}
+  audioClip: {fileID: 0}
