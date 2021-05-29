@@ -13,13 +13,11 @@ MonoBehaviour:
   m_Name: 0-0-19_Outro
   m_EditorClassIdentifier: 
   stateName: 0-0-19
-  basic: 0
   initializePlayer: 0
   storyText: You step out of your office into the chilly night air. You light a cigarette
     and watch the smoke drift up into the street-light. It's gonna be a long night.
   optText: (Continue)
   chapterTitle: 
-  locked: 0
   childStates: []
   parameters: 
   setFunctions: 

@@ -8,12 +8,10 @@ public class State : ScriptableObject {
 
     [SerializeField] string stateName;
 
-    [SerializeField] bool basic = false;
     [SerializeField] bool initializePlayer = false;
     [TextArea(10, 14)] [SerializeField] string storyText;
     [TextArea(2, 5)] [SerializeField] string optText;
     [SerializeField] string chapterTitle;
-    [SerializeField] bool locked = false;
     [SerializeField] State[] childStates;
 
     [TextArea(10, 14)] [SerializeField] string parameters;
@@ -24,10 +22,6 @@ public class State : ScriptableObject {
 
     public string getStateName() {
         return stateName;
-    }
-
-    public bool isBasic() {
-        return basic;
     }
 
     public bool initializesPlayer() {
@@ -59,13 +53,6 @@ public class State : ScriptableObject {
         }
     }
 
-    public bool isLocked() {
-        return locked;
-    }
-    public void setLocked(bool set) {
-        locked = set;
-    }
-
     public State[] getChildStates() {
         return childStates;
     }
@@ -95,7 +82,7 @@ public class State : ScriptableObject {
                     }
                     break;
                 case "ITEM_REQ":
-                    if(!p.hasItem(set[0])) {
+                    if(!p.hasItem(set[0], Int32.Parse(set[2]))) {
                         return false;
                     }
                     break;
@@ -110,7 +97,7 @@ public class State : ScriptableObject {
                     }
                     break;
                 case "ITEM_LOCK":
-                    if(p.hasItem(set[0])) {
+                    if(p.hasItem(set[0], Int32.Parse(set[2]))) {
                         return false;
                     }
                     break;
@@ -180,29 +167,35 @@ public class State : ScriptableObject {
             return;
         }
 
-        string[] setFunctionArrs = setFunctions.Split('|');
-        foreach(string function in setFunctionArrs) {
-            string[] set = function.Split('%');
-            switch(set[1]) {
-                case "VAR_SET":
-                    manageVars(p, set);
-                    break;
-                case "FLAG_SET":
-                    p.setFlag(set[0]);
-                    break;
-                case "ITEM_SET":
-                    p.setItem(set[0]);
-                    break;
-                case "FLAG_KILL":
-                    p.killFlag(set[0]);
-                    break;
-                case "ITEM_KILL":
-                    p.killItem(set[0]);
-                    break;
-                default:
-                    Debug.Log("Bad set in setFunctions.\nReceived " + set[1]);
-                    return;
+        try {
+            string[] setFunctionArrs = setFunctions.Split('|');
+            foreach(string function in setFunctionArrs) {
+                string[] set = function.Split('%');
+                switch(set[1]) {
+                    case "VAR_SET":
+                        manageVars(p, set);
+                        break;
+                    case "FLAG_SET":
+                        p.setFlag(set[0]);
+                        break;
+                    case "ITEM_SET":
+                        p.setItem(set[0], Int32.Parse(set[2]));
+                        break;
+                    case "FLAG_KILL":
+                        p.killFlag(set[0]);
+                        break;
+                    case "ITEM_KILL":
+                        p.killItem(set[0], Int32.Parse(set[2]));
+                        break;
+                    default:
+                        Debug.Log("Bad set in setFunctions.\nReceived " + set[1]);
+                        return;
+                }
             }
+        } catch(IndexOutOfRangeException) {
+            Debug.Log("Bad set passed to managePlayer. Received set of invalid length.");
+        } catch(FormatException) {
+            Debug.Log("Bad value passed to managePlayer");
         }
     }
 
@@ -240,6 +233,7 @@ public class State : ScriptableObject {
         List<int> varVals = new List<int>();
         List<string> flags = new List<string>();
         List<string> items = new List<string>();
+        List<int> itemQty = new List<int>();
 
         bool clear = false;
 
@@ -265,6 +259,7 @@ public class State : ScriptableObject {
                         break;
                     case "ITEM":
                         items.Add(set[0]);
+                        itemQty.Add(Int32.Parse(set[2]));
                         break;
                     default:
                         Debug.Log("Bad value passed to initPlayer.\nReceived " + set[1]);
@@ -286,8 +281,8 @@ public class State : ScriptableObject {
             foreach(string flag in flags) {
                 p.setFlag(flag);
             }
-            foreach(string item in items) {
-                p.setItem(item);
+            for(int i = 0; i < items.Count; i++) {
+                p.setItem(items[i], itemQty[i]);
             }
         } catch(FormatException) {
             Debug.Log("Bad value passed to initPlayer.\nReceived " + set[2]);

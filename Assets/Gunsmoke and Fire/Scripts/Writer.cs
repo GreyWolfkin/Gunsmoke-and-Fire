@@ -4,6 +4,28 @@ using UnityEngine;
 
 public class Writer
 {
+
+    public static string[] getItem(string item) {
+        string name;
+        string entry;
+
+        switch(item) {
+            case "bottle_of_bourbon":
+                name = "Bottle of Bourbon";
+                entry = "The good stuff. Unopened.";
+                break;
+            case "healing_potion":
+                name = "Healing Potion";
+                entry = "A vial of red, viscous liquid. Good for a quick pick-me-up.";
+                break;
+            default:
+                name = "";
+                entry = "";
+                break;
+        }
+
+        return new string[] { name, entry };
+    }
     
     public static string getInventoryEntry(string item) {
         string entry;
@@ -11,6 +33,9 @@ public class Writer
         switch(item) {
             case "bottle_of_bourbon":
                 entry = "Bottle of Bourbon\n\tThe good stuff.Unopened.";
+                break;
+            case "healing_potion":
+                entry = "Healing Potion\n\tA vial of red, viscous liquid. Good for a quick pick-me-up.";
                 break;
             default:
                 entry = "";

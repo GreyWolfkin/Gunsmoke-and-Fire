@@ -33,12 +33,19 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Get Playtester Opinion: Is repeating narrative text immersion breaking?
      *          e.g. Harald's Bar. You get the same introduction whether you've been there before or not. Do we need a different state for returning to the place? Or will the user accept repeated text?
      *      Flashback Chapter - 4 years ago, murder investigation, tutorial on puzzle solving mechanics, interrogation scene, then receive Atellena case
+     *      Do we really need the instructional screens? Consider removing them? If the mechanics are well-designed, you shouldn't need a tutorial
      * 
      */
 
     /*
      * BUGS
-     *      
+     *    
+     */
+
+    /*
+     * CURRENT DEVLOG
+     *      Ability to remove items and flags, removing their entries as well
+     *      Ability to count qty of items in inventory, and display that qty in Inventory screen
      */
 
     /*
@@ -64,6 +71,8 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     // Fields which store temporary story and options text to fade in/out over existing text
     [SerializeField] Text overlayStoryField;
     [SerializeField] Text overlayOptionsField;
+
+    [SerializeField] State[] chapterStates;
 
     Player p;
     List<State> statesList;
@@ -104,6 +113,9 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
 
+
+        /*
+
         statesList = new List<State>();
 
         AddChildStatesToStatesList(startingState);
@@ -113,6 +125,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         for(int i = 0; i < states.Length; i++) {
             stateNames[i] = states[i].getStateName();
         }
+        */
 
         // Set Alpha to 0 for overlayStoryField and overlayOptionsField
         overlayStoryField.CrossFadeAlpha(0, 0.0f, false);
@@ -134,6 +147,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         codes = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "i", "j", "o" };
 
         currentState = startingState;
+        SetStatesList();
 
         // p = ScriptableObject.CreateInstance<Player>();
         p = new Player();
@@ -146,18 +160,55 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         manageState();
     }
 
-    void AddChildStatesToStatesList(State state) {
+    void SetStatesList() {
+        if(statesList != null) {
+            statesList.Clear();
+        } else {
+            statesList = new List<State>();
+        }
+        AddChildStatesToStatesList(currentState);
+        states = statesList.ToArray();
+        stateNames = new string[states.Length];
 
+        for(int i = 0; i < states.Length; i++) {
+            stateNames[i] = states[i].getStateName();
+        }
+    }
+
+    void AddChildStatesToStatesList(State state) {
         if(!statesList.Contains(state)) {
             statesList.Add(state);
             foreach(State childState in state.getChildStates()) {
-                AddChildStatesToStatesList(childState);
+                if(SameChapter(state, childState)) {
+                    AddChildStatesToStatesList(childState);
+                }
             }
         } else {
             return;
         }
     }
 
+    bool SameChapter(State parentState, State childState) {
+        string parentChapter = GetChapter(parentState.getStateName());
+        string childChapter = GetChapter(childState.getStateName());
+        if(childChapter.Equals(parentChapter)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    string GetChapter(string stateName) {
+        string chapter = "";
+        for(int i = 0; i < stateName.Length; i++) {
+            if(stateName[i] != '-') {
+                chapter += stateName[i];
+            } else {
+                return chapter;
+            }
+        }
+        return chapter;
+    }
 
     // Update is called once per frame
     void Update() {
@@ -167,8 +218,8 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         } else if(
             currentState == saveState ||
             currentState == loadState ||
-            currentState == quitState ||
-            currentState == newGameState
+            currentState == newGameState ||
+            currentState == quitState 
         ) {
             internalOptionsListener();
         } else {
@@ -222,13 +273,13 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             currentState = loadState;
             ConfirmLoad();
             return;
-        } else if(Input.GetKeyDown(KeyCode.Q)) {
-            currentState = quitState;
-            ConfirmQuit();
-            return;
         } else if(Input.GetKeyDown(KeyCode.N)) {
             currentState = newGameState;
             ConfirmNew();
+            return;
+        } else if(Input.GetKeyDown(KeyCode.Q)) {
+            currentState = quitState;
+            ConfirmQuit();
             return;
         } else {
             return;
@@ -243,11 +294,9 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             } else if(currentState == loadState) {
                 LoadGame();
                 return;
-            } else if(currentState == quitState) {
-                // UnityEditor.EditorApplication.isPlaying = false;
-                Application.Quit();
             } else if(currentState == newGameState) {
                 currentState = startingState;
+                SetStatesList();
                 p = new Player();
                 if(currentState.initializesPlayer()) {
                     currentState.initPlayer(p);
@@ -255,6 +304,9 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
                 p.setCurrentState(currentState.getStateName());
                 manageState();
                 returnState();
+            } else if(currentState == quitState) {
+                // UnityEditor.EditorApplication.isPlaying = false;
+                Application.Quit();
             }
         } else if(Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) {
             returnState();
@@ -276,6 +328,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             previousStateWasBasic = true;
             readJournal();
         } else if(code == 12) {
+            // O - Options
             currentState = optionsState;
             previousStateWasBasic = true;
             readOptions();
@@ -364,6 +417,12 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         for(int i = 0; i < availableStates.Count; i++) {
             if(opt == i) {
                 currentState = availableStates[opt];
+                if(Array.Exists(chapterStates, element => element == currentState)) {
+                    SetStatesList();
+                }
+                if(currentState.initializesPlayer()) {
+                    currentState.initPlayer(p);
+                }
                 p.setCurrentState(currentState.getStateName());
                 previousStateWasBasic = false;
                 manageState();
@@ -373,7 +432,6 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
 
     private void manageState() {
-
         if(currentState.hasChapterTitle()) {
             chapterField.text = currentState.getChapterTitle();
         }
@@ -406,9 +464,6 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             if(!state.isAvailable(p)) {
                 availableStates.Remove(state);
             }
-        }
-        if(currentState.isBasic()) {
-            availableStates.Add(getPlayerState());
         }
     }
 
@@ -468,15 +523,15 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         display += "RETURN - Return to the game.\n";
         display += "SAVE - Save your game.\n";
         display += "LOAD - Load a saved game.\n";
-        display += "QUIT - Quit the game. All unsaved progress will be lost.\n";
-        display += "NEW - Start a new game.";
+        display += "NEW - Start a new game.\n";
+        display += "QUIT - Quit the game. All unsaved progress will be lost.";
 
         string options = "";
         options += "ENTER - RETURN\n";
         options += "S - SAVE\n";
         options += "L - LOAD\n";
-        options += "Q - QUIT\n";
-        options += "N - NEW";
+        options += "N - NEW\n";
+        options += "Q - QUIT";
 
         StartCoroutine(textFadeHandler(display, options));
     }
@@ -512,6 +567,14 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             file.Close();
 
             p = save.getPlayer();
+            string playerChapter = GetChapter(p.getCurrentState());
+            foreach(State chapterState in chapterStates) {
+                if(GetChapter(chapterState.getStateName()).Equals(playerChapter)) {
+                    currentState = chapterState;
+                    break;
+                }
+            }
+            SetStatesList();
             currentState = getPlayerState();
             manageState();
             returnState();
@@ -567,16 +630,16 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     }
 
 
-    private void ConfirmQuit() {
-        string display = "Are you sure you wish to quit?";
+    private void ConfirmNew() {
+        string display = "Are you sure you wish to start a new game?";
         string options = "1 - YES\n2 - NO";
 
         StartCoroutine(textFadeHandler(display, options));
     }
 
 
-    private void ConfirmNew() {
-        string display = "Are you sure you wish to start a new game?";
+    private void ConfirmQuit() {
+        string display = "Are you sure you wish to quit?";
         string options = "1 - YES\n2 - NO";
 
         StartCoroutine(textFadeHandler(display, options));

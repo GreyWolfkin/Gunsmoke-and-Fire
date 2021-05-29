@@ -13,16 +13,14 @@ MonoBehaviour:
   m_Name: 0-0-9_WallsRepeat
   m_EditorClassIdentifier: 
   stateName: 0-0-9
-  basic: 0
   initializePlayer: 0
   storyText: You've looked over the walls already. Seems like whoever attacked you
     had magic, as well as a gun. They came prepared.
   optText: Examine the walls
   chapterTitle: 
-  locked: 0
   childStates:
   - {fileID: 11400000, guid: 9f091aad93fb8c740a762560f55ff301, type: 2}
   parameters: clues_found%VAR_REQ%<%4|examined_walls%FLAG_REQ
   setFunctions: 
   initialSettings: 
-  audio: {fileID: 0}
+  audioClip: {fileID: 0}

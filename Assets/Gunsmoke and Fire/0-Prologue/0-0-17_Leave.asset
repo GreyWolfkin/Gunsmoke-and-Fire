@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: 0-0-17_Leave
   m_EditorClassIdentifier: 
   stateName: 0-0-17
-  basic: 0
   initializePlayer: 0
   storyText: "You grab your coat, thinking over what you've learned. Some hard customer
     found you in your office. There was a shoot-out. They clipped you in the head
@@ -24,7 +23,6 @@ MonoBehaviour:
     two months ago, you watched him swing.\r"
   optText: Leave
   chapterTitle: 
-  locked: 0
   childStates:
   - {fileID: 11400000, guid: 440834ca55b701f41b4b40d4a78c3f9b, type: 2}
   parameters: clues_found%VAR_REQ%==%4

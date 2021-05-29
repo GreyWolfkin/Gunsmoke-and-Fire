@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: 0-0-6_Bourbon
   m_EditorClassIdentifier: 
   stateName: 0-0-6
-  basic: 0
   initializePlayer: 0
   storyText: 'It''s still there! Undamaged! At least one thing is going your way
     tonight.
@@ -26,10 +25,9 @@ MonoBehaviour:
     You tuck the corn safely inside your jacket.'
   optText: (Continue)
   chapterTitle: 
-  locked: 0
   childStates:
   - {fileID: 11400000, guid: 9f091aad93fb8c740a762560f55ff301, type: 2}
   parameters: 
-  setFunctions: bottle_of_bourbon%ITEM_SET
+  setFunctions: bottle_of_bourbon%ITEM_SET%1
   initialSettings: 
   audioClip: {fileID: 8300000, guid: ab453291c39d8e6499d51d813f3a63f9, type: 3}
