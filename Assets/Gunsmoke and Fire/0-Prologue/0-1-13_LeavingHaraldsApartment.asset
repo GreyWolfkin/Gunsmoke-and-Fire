@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-1-13_LeavingHaraldsApartment
+  m_EditorClassIdentifier: 
+  stateName: 0-1-13
+  initializePlayer: 0
+  storyText: '"Thanks for the rag, Harald. I should try to get home," you say, standing.
+
+    "You
+    sure you''re gonna be okay?"
+
+    Honestly, you feel woozy, but some part of
+    you is screaming to get home. There''s something back home that you need. That
+    you have to get to. You''re not sure what, but it''s important.
+
+    "Yeah,
+    I''ll be fine. Sorry to wake you."
+
+    He shakes his head. "Come by the bar
+    tomorrow. And I''ll keep my ear to the ground. If I hear anything, I''ll give
+    you the wire."
+
+    You nod in thanks, and head out the door. It locks quietly
+    behind you.'
+  optText: (Continue)
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: dc55a9aa9906a1a43b4e872ef0bb7a73, type: 2}
+  parameters: 
+  setFunctions: 
+  initialSettings: 
+  audioClip: {fileID: 0}

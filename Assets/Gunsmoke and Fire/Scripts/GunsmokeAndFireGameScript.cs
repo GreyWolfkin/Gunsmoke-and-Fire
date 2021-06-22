@@ -17,10 +17,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Cleanup State code
      *      Comment state code
      *      Build framework for puzzle-solving mechanic
-     *      Add ability to remove journal entries
-     *      Add ability to remove inventory items
      *      Fix naming convention on methods (even though I don't want to)
-     *      Figure out a way to load only scenes for each chapter at a time?
      *      Cleanup Start method, abstract to new methods
      *      Set up tabs in Journal?
      *          Contacts, Clues, Key Events?
@@ -34,6 +31,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *          e.g. Harald's Bar. You get the same introduction whether you've been there before or not. Do we need a different state for returning to the place? Or will the user accept repeated text?
      *      Flashback Chapter - 4 years ago, murder investigation, tutorial on puzzle solving mechanics, interrogation scene, then receive Atellena case
      *      Do we really need the instructional screens? Consider removing them? If the mechanics are well-designed, you shouldn't need a tutorial
+     *          Feedback from Katie - Information is important, but maybe there's a better way to relay it
      * 
      */
 
@@ -44,8 +42,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     /*
      * CURRENT DEVLOG
-     *      Ability to remove items and flags, removing their entries as well
-     *      Ability to count qty of items in inventory, and display that qty in Inventory screen
+     *      
      */
 
     /*
@@ -60,6 +57,11 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Finish Options screens
      *      Abstract some code from Listener back to Update
      *      Find a cleaner way to store audio files and state triggers
+     *      Ability to remove items and flags, removing their entries as well
+     *      Ability to count qty of items in inventory, and display that qty in Inventory screen
+     *      Add ability to remove journal entries
+     *      Add ability to remove inventory items
+     *      Figure out a way to load only scenes for each chapter at a time?
      */
 
     // Text Fields for displaying story text and options text.

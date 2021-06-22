@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-1-7_WakeUpHarald
+  m_EditorClassIdentifier: 
+  stateName: 0-1-7
+  initializePlayer: 0
+  storyText: 'You climb the ladder to the outside door of Harald''s apartment. You
+    pound on the door four times. Shortly you hear rustling from inside. A low thump
+    is followed by a sharp curse, and then the locks on the door turn. Harald opens
+    the door a crack.
+
+    "Who the fuck is... Leo? Leo what the hell are you doing
+    getting me out of bed at this hour?"
+
+    You open your mouth to speak, and
+    then a thought stops you in your tracks.
+
+    You have no idea who came after
+    you. No idea who they were working with. Do you really want to start spitting
+    about what happened?
+
+    But surely you can trust Harald, right?'
+  optText: Wake up Harald
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: ca771f7b57255c645a84214adcd50faf, type: 2}
+  - {fileID: 11400000, guid: 02342fffd1c8cb8439a5798d31c302cc, type: 2}
+  parameters: woke_up_harald%FLAG_LOCK
+  setFunctions: woke_up_harald%FLAG_SET
+  initialSettings: 
+  audioClip: {fileID: 0}

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-1-10_ConversationCont
+  m_EditorClassIdentifier: 
+  stateName: 0-1-10
+  initializePlayer: 0
+  storyText: '"Not sure I know," you admit. "Woke up like this in my office. Seems
+    like there was some kind of a shoot-out, but I''ve got no idea who clipped me.
+    The only reason I''m alive is this head wound. I''m guessing when they saw me
+    lying in a pool of blood they thought they''d done the job."
+
+    "Jesus. Did
+    they leave any clues behind?" Harald is looking at you with a mixture of concern
+    and curiosity.
+
+    And is that... is there a third look on his face? Right
+    there, that shine in his eyes. Maybe it''s just your imagination, you can barely
+    see straight after all, but you think you see something else written there.'
+  optText: (Continue)
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: 1ada9fecf28a8c14082f414c8b7c4b3f, type: 2}
+  - {fileID: 11400000, guid: 352df49c57a9eb94c8b48f5fb42d6d9e, type: 2}
+  parameters: 
+  setFunctions: 
+  initialSettings: 
+  audioClip: {fileID: 0}

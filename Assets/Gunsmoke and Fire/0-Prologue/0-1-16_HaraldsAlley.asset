@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-1-16_HaraldsAlley
+  m_EditorClassIdentifier: 
+  stateName: 0-1-16
+  initializePlayer: 0
+  storyText: You leave the comfortable glow of the streetlights and venture into
+    the alley between the buildings. The smell of garbage drifts lazily from the
+    cans. Back here you might find a stray dog, or a wino sleeping off a day spent
+    drinking Harald's dry.
+  optText: Head into the alley
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: 56e28d61ad6cf0849a16c73216bf81b3, type: 2}
+  - {fileID: 11400000, guid: 9f1380fa864fbdc49bf9c2263d0df056, type: 2}
+  parameters: inspected_haralds_alley%FLAG_LOCK
+  setFunctions: 
+  initialSettings: 
+  audioClip: {fileID: 0}

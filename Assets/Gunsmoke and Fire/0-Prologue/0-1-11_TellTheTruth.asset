@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-1-11_TellTheTruth
+  m_EditorClassIdentifier: 
+  stateName: 0-1-11
+  initializePlayer: 0
+  storyText: '"They didn''t leave anything behind, but they sure as hell took something.
+    Evidence of a kidnapping cold case."
+
+    "Why would they want that," he asks.
+
+    "No
+    idea. There hasn''t been a break in it in years. But someone was willing to kill
+    for it."
+
+    That look you thought you saw, that shadow behind Harald''s eyes,
+    you''re certain now you imagined it. You feel glad that you told Harald the truth.
+    If you can''t trust him, you can''t trust anybody.'
+  optText: Tell Harald what they took
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: 72be63892fe1b6649ab56acb0df5a1ad, type: 2}
+  parameters: 
+  setFunctions: told_harald_the_truth%FLAG_SET
+  initialSettings: 
+  audioClip: {fileID: 0}

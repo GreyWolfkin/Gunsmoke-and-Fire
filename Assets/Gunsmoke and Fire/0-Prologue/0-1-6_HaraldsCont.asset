@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-1-6_HaraldsCont
+  m_EditorClassIdentifier: 
+  stateName: 0-1-6
+  initializePlayer: 0
+  storyText: 'At the moment, the bar is closed up, no lights shine through the shuttered
+    windows.
+
+    You know Harald lives over the bar. If you urgently needed to
+    talk to him, you could always head up the ladder and bang on the outside door
+    until he wakes up.
+
+    Otherwise, if you think there''s anything of value in
+    the alley behind the bar, you could poke around a bit.
+
+    Or you could head
+    back to the Office.'
+  optText: (Continue)
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: 6626eef668892c042bc1e733d97e3e02, type: 2}
+  - {fileID: 11400000, guid: e1e54c7426ab11f419a20097e6fb25d4, type: 2}
+  - {fileID: 11400000, guid: e7cfc586558d7da45b3e0dd09282499a, type: 2}
+  - {fileID: 11400000, guid: f82faa65d4cdd7149803f2144a75226c, type: 2}
+  - {fileID: 11400000, guid: c2ffd21cf8cef4a49895fced07f97edd, type: 2}
+  parameters: 
+  setFunctions: 
+  initialSettings: 
+  audioClip: {fileID: 0}

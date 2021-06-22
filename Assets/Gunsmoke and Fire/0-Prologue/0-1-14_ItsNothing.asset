@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-1-14_ItsNothing
+  m_EditorClassIdentifier: 
+  stateName: 0-1-14
+  initializePlayer: 0
+  storyText: "\r\"It's nothing,\" you say. \"Sorry to bother you.\"\r\n\"What the
+    fuck, Leo? You gowed-up or something? Wake me up at 2 in the morning and say
+    it's nothing. Get the hell outta here before I sock you one.\"\r\nHarald slams
+    the door and locks it. You can hear him muttering as he walks away."
+  optText: '"It''s nothing. Sorry to bother you."'
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: dc55a9aa9906a1a43b4e872ef0bb7a73, type: 2}
+  parameters: 
+  setFunctions: woke_harald_up_for_nothing%FLAG_SET
+  initialSettings: 
+  audioClip: {fileID: 0}

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-1-0_Prologue
+  m_EditorClassIdentifier: 
+  stateName: 0-1-0
+  initializePlayer: 0
+  storyText: You start to walk towards your car and stumble. The cigarette drops
+    from your fingers as you grab at the side of the building to steady yourself.
+    The night swims and you struggle to stay upright. Moving like a boozehound, you
+    eventually make it to your car. You realize with a curse that you're in no state
+    to drive. Seems like you'll be walking home.
+  optText: (Continue)
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: 0118a2b8bf25cc34f90ded90dafef3f6, type: 2}
+  parameters: 
+  setFunctions: 
+  initialSettings: 
+  audioClip: {fileID: 0}

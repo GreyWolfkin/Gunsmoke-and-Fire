@@ -246,7 +246,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &102439147
 Transform:
   m_ObjectHideFlags: 0
@@ -654,8 +654,8 @@ MonoBehaviour:
   overlayOptionsField: {fileID: 1303405575}
   chapterStates:
   - {fileID: 11400000, guid: 7c9d4c6f19bb6b8429ff0da6f58c3566, type: 2}
-  - {fileID: 11400000, guid: c4b403e5876c37c488f739b514258a55, type: 2}
-  - {fileID: 11400000, guid: 17563a908b7227d4595f4869bc755dd6, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
   startingState: {fileID: 11400000, guid: 7c9d4c6f19bb6b8429ff0da6f58c3566, type: 2}
 --- !u!4 &188592247
 Transform:

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-1-17_InspectAlley
+  m_EditorClassIdentifier: 
+  stateName: 0-1-17
+  initializePlayer: 0
+  storyText: "\rIt might be worth checking the alley out further. You never know
+    what you're going to find.\r\nAs you move through the dark alley, you bump a
+    trashcan. A stray cat, hidden in the shadows, hisses and leaps away, disappearing
+    once again into the darkness.\r\nSomething catches your eye. There, tucked into
+    a drain pipe on the side of the building. A small package, wrapped up and water-proof.\r\nA
+    dead-drop."
+  optText: Inspect alley
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: 045c0ce74d5b43145b96d1febc6a3974, type: 2}
+  parameters: 
+  setFunctions: inspected_haralds_alley%FLAG_SET
+  initialSettings: 
+  audioClip: {fileID: 0}

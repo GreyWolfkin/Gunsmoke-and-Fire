@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: 0-1-3_OutsideOffice
+  m_EditorClassIdentifier: 
+  stateName: 0-1-3
+  initializePlayer: 0
+  storyText: 'You''re standing in the light of the streetlamp, outside your office
+    building on 505 Water Street.
+
+    To the right you know Water Street will eventually
+    intersect Main, and that will lead you into the heart of the city.
+
+    To the
+    left Water Street intersects Trent Ave. You remember driving down that way a
+    lot, but you don''t think it''s the way home.'
+  optText: (Continue)
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: f32bc9972cab1064391f11efc2922a3d, type: 2}
+  parameters: found_haralds_bar%FLAG_LOCK
+  setFunctions: 
+  initialSettings: 
+  audioClip: {fileID: 0}

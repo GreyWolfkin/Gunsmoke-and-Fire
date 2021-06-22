@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
-  m_Name: 0-0-19_Outro
+  m_Name: 0-1-20_LeaveAlley
   m_EditorClassIdentifier: 
-  stateName: 0-0-19
+  stateName: 0-1-20
   initializePlayer: 0
-  storyText: You step out of your office into the chilly night air. You light a cigarette
-    and watch the smoke drift up into the street-light. It's gonna be a long night.
-  optText: (Continue)
+  storyText: You decide not to look through the alley after all. Probably nothing
+    to find anyway.
+  optText: Leave
   chapterTitle: 
   childStates:
-  - {fileID: 11400000, guid: 19a35aeb1bbe20e458638589c6162909, type: 2}
+  - {fileID: 11400000, guid: dc55a9aa9906a1a43b4e872ef0bb7a73, type: 2}
   parameters: 
   setFunctions: 
   initialSettings: 
-  audioClip: {fileID: 8300000, guid: c307103262b6f404ab3c5dfaf49a1272, type: 3}
+  audioClip: {fileID: 0}
