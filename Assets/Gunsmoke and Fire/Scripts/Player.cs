@@ -19,6 +19,18 @@ public class Player {
     List<int> itemQty = new List<int>();
     List<string> itemEntries = new List<string>();
 
+    private string getChapter() {
+        string chapter = "";
+        for(int i = 0; i < currentState.Length; i++) {
+            if(currentState[i] != '-') {
+                chapter += currentState[i];
+            } else {
+                return chapter;
+            }
+        }
+        return chapter;
+    }
+
     public string getCurrentState() {
         return currentState;
     }
@@ -83,21 +95,25 @@ public class Player {
     public void setFlag(string flag) {
         flags.Add(flag);
 
-        string entry = Writer.getJournalEntry(flag);
+        string entry = Writer.getJournalEntry(getChapter(), flag);
         if(entry.Length != 0) {
             journalEntries.Insert(0, entry);
         }
 
         string killedEntry = Writer.killEntry(flag);
         if(killedEntry.Length != 0 && flags.Contains(killedEntry)) {
-            journalEntries.Remove(Writer.getJournalEntry(killedEntry));
+            journalEntries.Remove(Writer.getJournalEntry(getChapter(), killedEntry));
         }
+    }
+    public void setDeduction(string flag, string entry) {
+        flags.Add(flag);
+        journalEntries.Insert(0, entry);
     }
     public void killFlag(string flag) {
         if(flags.Contains(flag)) {
             flags.Remove(flag);
 
-            string entry = Writer.getJournalEntry(flag);
+            string entry = Writer.getJournalEntry(getChapter(), flag);
             if(entry.Length != 0) {
                 journalEntries.Remove(entry);
             }
@@ -146,7 +162,7 @@ public class Player {
         } else {
             items.Insert(0, item);
             itemQty.Insert(0, qty);
-            string[] itemWriter = Writer.getItem(item);
+            string[] itemWriter = Writer.getItem(getChapter(), item);
             string name = itemWriter[0];
             string entry = itemWriter[1];
             itemNames.Insert(0, name);

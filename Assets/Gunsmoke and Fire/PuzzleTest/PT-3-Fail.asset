@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179420ff4c3910248b600bf73e2fcdf7, type: 3}
+  m_Name: PT-3-Fail
+  m_EditorClassIdentifier: 
+  stateName: 
+  initializePlayer: 0
+  storyText: Incorrect deduction. Killing deduction flag.
+  optText: Test Deduction
+  chapterTitle: 
+  childStates:
+  - {fileID: 11400000, guid: dbe242a693c24b94ebc7739ead5f69b0, type: 2}
+  parameters: ded_a%FLAG_LOCK
+  setFunctions: ded_b%FLAG_KILL|ded_c%FLAG_KILL|ded_d%FLAG_KILL|ded_e%FLAG_KILL|ded_f%FLAG_KILL|ded_g%FLAG_KILL|ded_h%FLAG_KILL|ded_i%FLAG_KILL|ded_j%FLAG_KILL|ded_k%FLAG_KILL|ded_l%FLAG_KILL|ded_m%FLAG_KILL|ded_n%FLAG_KILL|ded_o%FLAG_KILL|ded_p%FLAG_KILL
+  initialSettings: 
+  audioClip: {fileID: 0}

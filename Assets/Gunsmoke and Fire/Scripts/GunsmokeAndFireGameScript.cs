@@ -17,10 +17,18 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
      *      Cleanup State code
      *      Comment state code
      *      Build framework for puzzle-solving mechanic
+     *          Player can access puzzle-solving at any time (D for Deductions?) AFTER the mechanic has been introduced. Way to prevent player from accessing it before that
+     *          Boolean that gets tripped on specific screen?
      *      Fix naming convention on methods (even though I don't want to)
      *      Cleanup Start method, abstract to new methods
      *      Set up tabs in Journal?
      *          Contacts, Clues, Key Events?
+     *          Ability to sort Journal Entries?
+     *      Ability to temporarily blank out entries (for Chapter 1 and possibly subsequent chapters)
+     *          Add boolean to states to use secondary, temporary journal? MAYBE
+     *      Difficulty Settings (Maybe in Chapter 1?) that determine whether puzzle-solving is required or automatic
+     *      Way to remove Journal Entries without removing flags (e.g. don't need Prologue entries after Prologue, but still need flags for what the player did)
+     *      Create variable that can contain various option states? So that multiple instances of scriptable object don't need to be created
      *      
      */
 
@@ -37,7 +45,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     /*
      * BUGS
-     *    
+     *    When starting a new game, previously selected deductions are still held, cannot be chosen again
      */
 
     /*
@@ -99,6 +107,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     bool previousStateWasBasic = false;
 
     // inventoryState and journalState need to be created within Start so that currentState can be set to these for navigation and read purposes
+    string stateType;
     State inventoryState;
     State journalState;
     State optionsState;
@@ -146,19 +155,21 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         quitState = ScriptableObject.CreateInstance<State>();
         newGameState = ScriptableObject.CreateInstance<State>();
 
-        codes = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "i", "j", "o" };
+        codes = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "i", "j", "c", "o" };
 
         currentState = startingState;
         SetStatesList();
+
+        stateType = currentState.getStateName();
 
         // p = ScriptableObject.CreateInstance<Player>();
         p = new Player();
 
         // If starting state is set to a different state for debugging purposes, or if loading a saved game, if the starting state does not have the initializesPlayer bool, do not reinitialize player variables
+        p.setCurrentState(currentState.getStateName());
         if(currentState.initializesPlayer()) {
             currentState.initPlayer(p);
         }
-        p.setCurrentState(currentState.getStateName());
         manageState();
     }
 
@@ -215,15 +226,23 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
-        if(currentState == optionsState) {
+        // if(currentState == optionsState) {
+        if(stateType.Equals("options")) {
             optionsListener();
+            // } else if(
         } else if(
-            currentState == saveState ||
-            currentState == loadState ||
-            currentState == newGameState ||
-            currentState == quitState 
-        ) {
+            stateType.Equals("save") ||
+            stateType.Equals("load") ||
+            stateType.Equals("new") ||
+            stateType.Equals("quit")
+            ) {
+            // currentState == saveState ||
+            //currentState == loadState ||
+            //currentState == newGameState ||
+            //currentState == quitState
+            // ) {
             internalOptionsListener();
+            // } else if(currentState == puzzleState) {
         } else {
             genericListener();
         }
@@ -257,6 +276,8 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         }
         if(!previousStateWasBasic) {
             manageKeystroke(getCodeIndex(input));
+        } else if(stateType.Equals("puzzle")) {
+            puzzleListener(getCodeIndex(input));
         } else {
             manageBasicKeystroke(getCodeIndex(input));
         }
@@ -269,18 +290,22 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             return;
         } else if(Input.GetKeyDown(KeyCode.S)) {
             currentState = saveState;
+            stateType = "save";
             ConfirmSave();
             return;
         } else if(Input.GetKeyDown(KeyCode.L)) {
             currentState = loadState;
+            stateType = "load";
             ConfirmLoad();
             return;
         } else if(Input.GetKeyDown(KeyCode.N)) {
             currentState = newGameState;
+            stateType = "new";
             ConfirmNew();
             return;
         } else if(Input.GetKeyDown(KeyCode.Q)) {
             currentState = quitState;
+            stateType = "quit";
             ConfirmQuit();
             return;
         } else {
@@ -290,23 +315,27 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     private void internalOptionsListener() {
         if(Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) {
-            if(currentState == saveState) {
+            // if(currentState == saveState) {
+            if(stateType.Equals("save")) {
                 SaveGame();
                 return;
-            } else if(currentState == loadState) {
+                // } else if(currentState == loadState) {
+            } else if(stateType.Equals("load")) {
                 LoadGame();
                 return;
-            } else if(currentState == newGameState) {
+                // } else if(currentState == newGameState) {
+            } else if(stateType.Equals("new")) {
                 currentState = startingState;
                 SetStatesList();
                 p = new Player();
+                p.setCurrentState(currentState.getStateName());
                 if(currentState.initializesPlayer()) {
                     currentState.initPlayer(p);
                 }
-                p.setCurrentState(currentState.getStateName());
                 manageState();
                 returnState();
-            } else if(currentState == quitState) {
+                // } else if(currentState == quitState) {
+            } else if(stateType.Equals("quit")) { 
                 // UnityEditor.EditorApplication.isPlaying = false;
                 Application.Quit();
             }
@@ -318,20 +347,140 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         }
     }
 
+    private void puzzleListener(int code) {
+        if(cluesToCombine.Count == 2) {
+            if(code == possibleConclusionsFlags.Count) {
+                puzzlePage = 0;
+                playerClues.Clear();
+                cluesToCombine.Clear();
+                possibleConclusionsFlags.Clear();
+                possibleConclusionsText.Clear();
+                foreach(string flag in p.getFlags()) {
+                    string clue = helper.getClue(GetChapter(p.getCurrentState()), flag);
+                    if(clue.Length != 0) {
+                        playerClues.Add(clue);
+                    }
+                }
+                runPuzzle();
+            } else if(code == possibleConclusionsFlags.Count + 1) {
+                returnState();
+            } else if(code < possibleConclusionsFlags.Count) {
+                playerConclusions.Add(possibleConclusionsFlags[code]);
+                // p.setDeduction(possibleConclusionsFlags[code], possibleConclusionsText[code]);
+                p.setFlag(possibleConclusionsFlags[code]);
+                StartCoroutine(displayConclusion(possibleConclusionsText[code]));
+            }
+        } else {
+            if(playerClues.Count <= 5) {
+                // Only one page
+                if(code == playerClues.Count) {
+                    // Example: 3 clues (input 1, 2, 3)
+                    // code 3 == input 4
+                    returnState();
+                } else if(code < playerClues.Count) {
+                    // code < 3 == input 1, 2, 3
+                    cluesToCombine.Add(playerClues[code]);
+                    runPuzzle();
+                }
+            } else {
+                // More than one page
+                if(puzzlePage == 0) {
+                    // On first page
+                    // 1 - 5 (codes 0 - 4) select clues
+                    // 6 (code 5) next page
+                    // 7 (code 6) close journal
+                    if(code == 5) {
+                        // code 5 == input 6
+                        puzzlePage++;
+                        runPuzzle();
+                    } else if(code == 6) {
+                        // code 6 == input 7
+                        returnState();
+                    } else if (code < 5) {
+                        // code < 5 == input 1, 2, 3, 4, 5
+                        cluesToCombine.Add(playerClues[code]);
+                        puzzlePage = 0;
+                        runPuzzle();
+                    }
+                } else if(playerClues.Count <= (puzzlePage + 1) * 5) {
+                    // On last page
+                    //  Example: 13 clues, 3 pages (0, 1, 2)
+                    //  On page 2
+                    //  playerClues.Count = 13; puzzlePage + 1 = 3; 3 * 5 = 15; 13 <= 15; On last page
+                    if(code == (playerClues.Count - (puzzlePage * 5))) {
+                        // Example:
+                        //  13 clues
+                        //  On page 2
+                        //  Showing clues 11, 12, 13 for input 1, 2, 3 (code 0, 1, 2)
+                        //  input 4 (code 3) = page back
+                        //  playerClues.Count = 13; puzzlePage * 5 = 10; 13 - 10 = 3; code == 3
+                        puzzlePage--;
+                        runPuzzle();
+                    } else if(code == (playerClues.Count - (puzzlePage * 5)) + 1) {
+                        // playerClues.Count = 13; puzzlePage * 5 = 10; 13 - 10 = 3; 3 + 1 = 4; code == 4
+                        returnState();
+                    } else if(code < (playerClues.Count - (puzzlePage * 5))) {
+                        // playerClues.Count = 13; puzzlePage * 5 = 10; 13 - 10 = 3; code < 3
+                        cluesToCombine.Add(playerClues[(puzzlePage * 5) + code]);
+                        puzzlePage = 0;
+                        runPuzzle();
+                    }
+                } else {
+                    // On middle page
+                    if(code == 5) {
+                        // code 5 == input 6
+                        puzzlePage++;
+                        runPuzzle();
+                    } else if(code == 6) {
+                        // code 6 == input 7
+                        puzzlePage--;
+                        runPuzzle();
+                    } else if(code == 7) {
+                        // code 7 == input 8
+                        returnState();
+                    } else if(code < 5) {
+                        // code < 5 == input 1, 2, 3, 4, 5
+                        cluesToCombine.Add(playerClues[(puzzlePage * 5) + code]);
+                        puzzlePage = 0;
+                        runPuzzle();
+                    }
+                }
+            }
+        }
+    }
+
     private void manageKeystroke(int code) {
         if(code == 10) {
             // I - Inventory
             currentState = inventoryState;
+            stateType = "inventory";
             previousStateWasBasic = true;
             readInventory();
         } else if(code == 11) {
             // J - Journal
             currentState = journalState;
+            stateType = "journal";
             previousStateWasBasic = true;
             readJournal();
         } else if(code == 12) {
+            stateType = "puzzle";
+            previousStateWasBasic = true;
+            puzzlePage = 0;
+            playerClues.Clear();
+            cluesToCombine.Clear();
+            possibleConclusionsFlags.Clear();
+            possibleConclusionsText.Clear();
+            foreach(string flag in p.getFlags()) {
+                string clue = helper.getClue(GetChapter(p.getCurrentState()), flag);
+                if(clue.Length != 0) {
+                    playerClues.Add(clue);
+                }
+            }
+            runPuzzle();
+        } else if(code == 13) {
             // O - Options
             currentState = optionsState;
+            stateType = "options";
             previousStateWasBasic = true;
             readOptions();
         } else {
@@ -353,9 +502,11 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         } else {
             if(code == 0) {
                 page++;
-                if(currentState == journalState) {
+                // if(currentState == journalState) {
+                if(stateType.Equals("journal")) {
                     readJournal();
-                } else if(currentState == inventoryState) {
+                    // } else if(currentState == inventoryState) {
+                } else if(stateType.Equals("inventory")) { 
                     readInventory();
                 }
             } else if(code == 1) {
@@ -410,6 +561,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
 
     private void returnState() {
         currentState = getPlayerState();
+        stateType = getPlayerState().getStateName();
         manageState();
         previousStateWasBasic = false;
     }
@@ -419,6 +571,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         for(int i = 0; i < availableStates.Count; i++) {
             if(opt == i) {
                 currentState = availableStates[opt];
+                stateType = currentState.getStateName();
                 if(Array.Exists(chapterStates, element => element == currentState)) {
                     SetStatesList();
                 }
@@ -448,7 +601,7 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
             for(int i = 0; i < availableStates.Count; i++) {
                 optionsText += (i + 1) + " - " + availableStates[i].getOptText() + "\n";
             }
-            optionsText += "I - Inventory\nJ - Journal\nO - Options";
+            optionsText += "I - Inventory\nJ - Journal\nC - Draw Conclusions\nO - Options";
         } else {
             optionsText += availableStates[0].getOptText();
             optionsText += "\n\nO - Options";
@@ -585,6 +738,27 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         }
     }
 
+    IEnumerator displayConclusion(string conclusion) {
+        string text = "";
+        text += conclusion;
+        text += "\n\nYou write it down in your Journal.";
+        overlayStoryField.text = text;
+        storyField.CrossFadeAlpha(0, 0.2f, false);
+        overlayStoryField.CrossFadeAlpha(1, 0.2f, false);
+
+        optionsField.CrossFadeAlpha(0, 0.2f, false);
+
+        yield return new WaitForSeconds(0.2f);
+
+        storyField.text = overlayStoryField.text;
+        storyField.CrossFadeAlpha(1, 0, false);
+        overlayStoryField.CrossFadeAlpha(0, 0, false);
+
+        yield return new WaitForSeconds(0.8f);
+
+        returnState();
+    } 
+
 
     IEnumerator displayGameSaved() {
         overlayStoryField.text = "GAME SAVED";
@@ -695,6 +869,92 @@ public class GunsmokeAndFireGameScript : MonoBehaviour {
         } else {
             return false;
         }
+    }
+
+
+
+    /**********
+     * TEST CODE
+     * PUZZLE MECHANICS
+     **********/
+
+    List<string> playerConclusions = new List<string>();
+    int puzzlePage;
+    PuzzleHelper helper = new PuzzleHelper();
+    List<string> playerClues = new List<string>();
+    List<string> cluesToCombine = new List<string>();
+    List<string> possibleConclusionsText = new List<string>();
+    List<string> possibleConclusionsFlags = new List<string>();
+
+    void runPuzzle() {
+        if(cluesToCombine.Count < 2) {
+            printPuzzlePage();
+        } else {
+            printPossibleConclusions();
+        }
+    }
+
+    void printPuzzlePage() {
+        string puzzleText = "";
+        string optionsText = "";
+        if(playerClues.Count > 1) {
+            if(cluesToCombine.Count != 0) {
+                playerClues.Remove(cluesToCombine[0]);
+            }
+            int choice = 1;
+            if(cluesToCombine.Count == 0) {
+                puzzleText += "Select first clue";
+            } else {
+                puzzleText += "Select second clue";
+            }
+            for(int i = puzzlePage * 5; i < playerClues.Count; i++) {
+                puzzleText += "\n\n";
+                puzzleText += choice + " - " + playerClues[i];
+                choice++;
+                if(i == playerClues.Count - 1 || i == puzzlePage * 5 + 4) {
+                    break;
+                }
+            }
+            if(playerClues.Count > ((puzzlePage + 1) * 5)) {
+                optionsText += choice + " - Next Page\n";
+                choice++;
+            }
+            if(puzzlePage > 0) {
+                optionsText += choice + " - Previous Page\n";
+                choice++;
+            }
+            optionsText += choice + " - Close Journal";
+        } else {
+            puzzleText += "Not enough clues to put together yet.";
+            optionsText += "1 - Close Journal";
+        }
+        StartCoroutine(textFadeHandler(puzzleText, optionsText));
+    }
+
+    void printPossibleConclusions() {
+        possibleConclusionsFlags = helper.getPossibleConclusionsFlags(GetChapter(p.getCurrentState()), playerConclusions, cluesToCombine);
+        // possibleConclusionsText = helper.getConclusionsText(GetChapter(p.getCurrentState()), possibleConclusionsFlags);
+        for(int i = 0; i < possibleConclusionsFlags.Count; i++) {
+            string text = helper.getConclusionText(GetChapter(p.getCurrentState()), possibleConclusionsFlags[i]);
+            if(text.Length != 0) {
+                possibleConclusionsText.Add(text);
+            }
+        }
+        string deductionText = "";
+        string optionsText = "";
+        deductionText += "POSSIBLE CONCLUSIONS\n--------------------";
+        if(possibleConclusionsFlags.Count != 0) {
+            for(int i = 0; i < possibleConclusionsFlags.Count; i++) {
+                deductionText += "\n\n";
+                deductionText += (i + 1) + " - " + possibleConclusionsText[i];
+            }
+            optionsText += possibleConclusionsFlags.Count + " - Return\n";
+        } else {
+            deductionText += "\n\nThese clues don't seem to go together.";
+        }
+        optionsText += (possibleConclusionsFlags.Count + 1) + " - Close Journal";
+
+        StartCoroutine(textFadeHandler(deductionText, optionsText));
     }
 
 }
